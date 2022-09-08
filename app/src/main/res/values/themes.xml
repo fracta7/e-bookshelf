@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Ebookshelf" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Ebookshelf" parent="Theme.Material3.Dark">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">false</item>
+    </style>
 </resources>

@@ -6,6 +6,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/home/fracta7/fracta7-linux')
+            storePassword 'kalikali'
+            keyAlias 'key'
+            keyPassword 'kalikali'
+        }
+    }
     compileSdk 33
 
     defaultConfig {
@@ -19,11 +27,12 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -62,6 +71,9 @@ dependencies {
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_version"
 
+    //theme
+    implementation 'com.google.android.material:material:1.6.1'
+
     //Room
     def room_version = '2.4.3'
     implementation "androidx.room:room-ktx:$room_version"
@@ -78,6 +90,17 @@ dependencies {
 
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.okhttp3:okhttp:5.0.0-alpha.3'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+
+    //coroutines
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+
+    //baseline profiles
+    implementation "androidx.profileinstaller:profileinstaller:1.2.0"
+}
+
+kapt {
+    correctErrorTypes true
 }

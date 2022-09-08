@@ -12,11 +12,11 @@ data class Book(
     @PrimaryKey val uid: Int? = null,
     val url: String?,
     val title: String?,
-    val authors: List<AuthorsModel>?,
-    val publishers: List<PublishersModel>?,
-    val publish_places: List<PublishPlacesModel>?,
+    val authors: String?,
+    val publishers: String?,
+    val publish_places: String?,
     val publish_date: String?,
-    val cover: Image?,
+    val cover: Int?,
     val number_of_pages: Int?,
     val weight: String?
 )
