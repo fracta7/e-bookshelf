@@ -2,18 +2,21 @@ package com.fracta7.e_bookshelf.presentation.main_screen
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.fracta7.e_bookshelf.R
 import com.fracta7.e_bookshelf.data.repository.book
+import com.fracta7.e_bookshelf.presentation.composable_elements.BookCard
 import com.fracta7.e_bookshelf.presentation.ui.theme.EbookshelfTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,7 +29,7 @@ fun MainScreen() {
 
     EbookshelfTheme() {
         Surface {
-            Column(
+            /*Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(4.dp)
             ) {
@@ -50,6 +53,82 @@ fun MainScreen() {
                 Text(text = "Published date: " + text.publish_date)
                 Text(text = "Number of pages: " + text.number_of_pages)
                 Text(text = "Weight: " + text.weight)
+            }
+        }*/
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Library",
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.padding(28.dp)
+                )
+                Column() {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = "Fiction",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                        TextButton(onClick = { /*TODO*/ }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_baseline_edit_24),
+                                contentDescription = ""
+                            )
+                            Text(text = "Edit", style = MaterialTheme.typography.labelMedium)
+                        }
+                    }
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                    ) {
+                        item{
+                            BookCard(
+                                painter = painterResource(id = R.drawable.lightning_thief),
+                                title = "Lightning Thief",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item{
+                            BookCard(
+                                painter = painterResource(id = R.drawable.harry_potter),
+                                title = "Harry Potter",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item{
+                            BookCard(
+                                painter = painterResource(id = R.drawable.lightning_thief),
+                                title = "Lightning Thief",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item{
+                            BookCard(
+                                painter = painterResource(id = R.drawable.harry_potter),
+                                title = "Harry Potter",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item{
+                            BookCard(
+                                painter = painterResource(id = R.drawable.lightning_thief),
+                                title = "Lightning Thief",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                        item{
+                            BookCard(
+                                painter = painterResource(id = R.drawable.harry_potter),
+                                title = "Harry Potter",
+                                modifier = Modifier.padding(8.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
     }

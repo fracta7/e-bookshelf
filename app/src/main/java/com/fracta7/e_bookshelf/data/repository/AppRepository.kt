@@ -16,7 +16,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
-var book = mutableStateOf(Book(null, "", "", "", "", "", "", 0, 0, ""))
+var book = mutableStateOf(Book(null, "", "", "", "", "", "", 0, 0, "","Default",false))
 
 class AppRepository @Inject constructor(
     private val bookAPI: BookAPI
@@ -80,7 +80,9 @@ class AppRepository @Inject constructor(
             cover = image,
             number_of_pages = number_of_pages,
             weight = weight,
-            authors = authors
+            authors = authors,
+            category = "Default",
+            favorite = false
         )
     }
 

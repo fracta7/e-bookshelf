@@ -16,7 +16,7 @@ class MainScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun triggerFlow(isbn: String): Book {
-        val book = mutableStateOf(Book(0,"","","","","","",0,0,""))
+        val book = mutableStateOf(Book(0,"","","","","","",0,0,"","Default",false))
         viewModelScope.launch {
             repository.getBookByISBN("ISBN:$isbn").collectLatest {
                 book.value = it

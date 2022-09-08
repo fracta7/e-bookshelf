@@ -18,5 +18,7 @@ data class Book(
     val publish_date: String?,
     val cover: Int?,
     val number_of_pages: Int?,
-    val weight: String?
+    val weight: String?,
+    val category: String? = "Default",
+    val favorite: Boolean?
 )
