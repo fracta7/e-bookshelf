@@ -1,6 +1,7 @@
 package com.fracta7.e_bookshelf.data.remote
 
 import com.fracta7.e_bookshelf.domain.model.book.isbn.ISBNModel
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -12,6 +13,9 @@ interface BookAPI {
 
     @GET("books?jscmd=data&format=json")
     fun getBookDetailsByISBN(@Query("bibkeys") isbn: String): Call<Map<String, ISBNModel>>
+
+    @GET("books?jscmd=data&format=json")
+    fun getBookByISBN(@Query("bibkeys") isbn: String): Call<Map<String, ISBNModel>>
 
     companion object {
         const val BASE_URL = "https://openlibrary.org/api/"

@@ -6,18 +6,21 @@ import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
-interface BookDao {
+interface BookEntityDao {
     @Query("SELECT * FROM book")
-    suspend fun getAll(): List<Book>
+    suspend fun getAll(): List<BookEntity>
 
     @Query("SELECT * FROM book WHERE uid IN (:bookIds)")
-    suspend fun loadById(bookIds: IntArray): List<Book>
+    suspend fun loadById(bookIds: IntArray): List<BookEntity>
 
     @Insert
-    suspend fun insertBook(vararg books: Book)
+    suspend fun insertBook(vararg books: BookEntity)
+
+    @Query("SELECT * FROM book WHERE isbn = :isbn")
+    suspend fun searchByISBN(isbn: String): BookEntity
 
     @Delete
-    suspend fun delete(book: Book)
+    suspend fun delete(bookEntity: BookEntity)
 
     @Query("DELETE FROM book")
     suspend fun deleteAll()

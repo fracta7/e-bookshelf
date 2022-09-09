@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.fracta7.e_bookshelf.data.local.database.AppDatabase
 import com.fracta7.e_bookshelf.data.remote.BookAPI
-import com.fracta7.e_bookshelf.data.repository.AppRepository
+import com.fracta7.e_bookshelf.data.repository.AppRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,7 +40,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideAppRepository(bookAPI: BookAPI): AppRepository {
-        return AppRepository(bookAPI)
+    fun provideAppRepository(bookAPI: BookAPI): AppRepositoryImpl {
+        return AppRepositoryImpl(bookAPI)
     }
 }

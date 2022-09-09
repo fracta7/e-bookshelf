@@ -8,8 +8,9 @@ import com.fracta7.e_bookshelf.domain.model.book.isbn.publishers.PublishPlacesMo
 import com.fracta7.e_bookshelf.domain.model.book.isbn.publishers.PublishersModel
 
 @Entity(tableName = "book")
-data class Book(
+data class BookEntity(
     @PrimaryKey val uid: Int? = null,
+    val isbn: String?,
     val url: String?,
     val title: String?,
     val authors: String?,
