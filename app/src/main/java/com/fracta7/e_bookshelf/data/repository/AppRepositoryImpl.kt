@@ -30,7 +30,7 @@ var book = mutableStateOf(
         "",
         "",
         "",
-        0,
+        "",
         0,
         "",
         "",

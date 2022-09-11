@@ -24,6 +24,12 @@ class MainScreenViewModel @Inject constructor(
             is MainScreenEvent.OnSearchQueryChange -> {
 
             }
+            is MainScreenEvent.SelectBook -> {
+
+            }
+            is MainScreenEvent.ChangeTheme -> {
+                state = state.copy(darkTheme = !state.darkTheme)
+            }
         }
     }
 

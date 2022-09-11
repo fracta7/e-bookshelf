@@ -15,7 +15,8 @@ fun BookEntity.toBook(): Book {
         number_of_pages = number_of_pages,
         weight = weight,
         category = category,
-        favorite = favorite
+        favorite = favorite,
+        isbn = isbn
     )
 }
 
@@ -31,6 +32,7 @@ fun Book.toBookEntity(): BookEntity {
         number_of_pages = number_of_pages,
         weight = weight,
         category = category,
-        favorite = favorite
+        favorite = favorite,
+        isbn = isbn
     )
 }

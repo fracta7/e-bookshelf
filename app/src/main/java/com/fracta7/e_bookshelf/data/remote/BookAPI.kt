@@ -15,7 +15,7 @@ interface BookAPI {
     fun getBookDetailsByISBN(@Query("bibkeys") isbn: String): Call<Map<String, ISBNModel>>
 
     @GET("books?jscmd=data&format=json")
-    fun getBookByISBN(@Query("bibkeys") isbn: String): Call<Map<String, ISBNModel>>
+    suspend fun getBookByISBN(@Query("bibkeys") isbn: String): Call<Map<String, ISBNModel>>
 
     companion object {
         const val BASE_URL = "https://openlibrary.org/api/"

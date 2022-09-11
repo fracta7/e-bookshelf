@@ -16,6 +16,19 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.ViewCompat
 
 private val DarkColorScheme = darkColorScheme(
+    primary = POTertiaryDark,
+    secondary = POSecondaryDark,
+    tertiary = POPrimaryDark
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = POTertiaryLight,
+    secondary = POSecondaryLight,
+    tertiary = POPrimaryLight
+
+    /*
+
+     private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
     tertiary = Pink80
@@ -26,7 +39,8 @@ private val LightColorScheme = lightColorScheme(
     secondary = PurpleGrey40,
     tertiary = Pink40
 
-    /* Other default colors to override
+
+     Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),
     onPrimary = Color.White,
@@ -36,6 +50,19 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     */
 )
+
+private val PaleOrangeLightScheme = lightColorScheme(
+    primary = POPrimaryLight,
+    secondary = POSecondaryLight,
+    tertiary = POTertiaryLight
+)
+
+private val PaleOrangeDarkScheme = darkColorScheme(
+    primary = POPrimaryDark,
+    secondary = POSecondaryDark,
+    tertiary = POTertiaryDark
+)
+
 
 @Composable
 fun EbookshelfTheme(

@@ -17,7 +17,7 @@ data class BookEntity(
     val publishers: String?,
     val publish_places: String?,
     val publish_date: String?,
-    val cover: Int?,
+    val cover: String?,
     val number_of_pages: Int?,
     val weight: String?,
     val category: String? = "Default",
