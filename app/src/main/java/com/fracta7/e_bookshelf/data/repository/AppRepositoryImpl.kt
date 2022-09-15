@@ -8,7 +8,7 @@ import com.fracta7.e_bookshelf.data.mapper.toBook
 import com.fracta7.e_bookshelf.data.mapper.toBookEntity
 import com.fracta7.e_bookshelf.data.remote.BookAPI
 import com.fracta7.e_bookshelf.domain.model.Book
-import com.fracta7.e_bookshelf.domain.model.book.isbn.ISBNModel
+import com.fracta7.e_bookshelf.data.remote.dto.book.isbn.ISBNModel
 import com.fracta7.e_bookshelf.domain.repository.AppRepository
 import com.fracta7.e_bookshelf.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -32,6 +32,7 @@ var book = mutableStateOf(
         "",
         "",
         0,
+        "",
         "",
         "",
         false
@@ -107,7 +108,8 @@ class AppRepositoryImpl @Inject constructor(
             authors = authors,
             category = category,
             favorite = false,
-            isbn = isbn
+            isbn = isbn,
+            description = null
         )
     }
 

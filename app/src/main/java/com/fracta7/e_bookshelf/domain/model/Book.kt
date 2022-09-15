@@ -11,6 +11,7 @@ data class Book(
     val cover: String?,
     val number_of_pages: Int?,
     val weight: String?,
-    val category: String? = "Default",
+    val readingList: String? = "Default",
+    val description: String?,
     val favorite: Boolean?
 )

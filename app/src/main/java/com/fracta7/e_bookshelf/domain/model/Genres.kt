@@ -29,6 +29,12 @@ object Genres {
         "History",
         "Travel",
         "True Crime",
-        "Humor"
+        "Humor",
+        "Essays",
+        "Guide/How-to",
+        "Religion&Spirituality",
+        "Humanities&Social Sciences",
+        "Parenting&Families",
+        "Science&Technology"
     )
 }

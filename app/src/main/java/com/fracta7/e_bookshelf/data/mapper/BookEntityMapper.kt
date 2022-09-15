@@ -14,9 +14,10 @@ fun BookEntity.toBook(): Book {
         cover = cover,
         number_of_pages = number_of_pages,
         weight = weight,
-        category = category,
+        readingList = readingList,
         favorite = favorite,
-        isbn = isbn
+        isbn = isbn,
+        description = description
     )
 }
 
@@ -31,8 +32,9 @@ fun Book.toBookEntity(): BookEntity {
         cover = cover,
         number_of_pages = number_of_pages,
         weight = weight,
-        category = category,
+        readingList = readingList,
         favorite = favorite,
-        isbn = isbn
+        isbn = isbn,
+        description = description
     )
 }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Ebookshelf" parent="Theme.Material3.Dark">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:enforceNavigationBarContrast">false</item>
+    <style name="Theme.Ebookshelf" parent="Theme.Design.NoActionBar">
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 </resources>

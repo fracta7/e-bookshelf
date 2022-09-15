@@ -1,7 +1,6 @@
 package com.fracta7.e_bookshelf.data.remote
 
-import com.fracta7.e_bookshelf.domain.model.book.isbn.ISBNModel
-import okhttp3.ResponseBody
+import com.fracta7.e_bookshelf.data.remote.dto.book.isbn.ISBNModel
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

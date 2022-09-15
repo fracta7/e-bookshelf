@@ -27,6 +27,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -41,6 +42,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -55,6 +57,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -69,6 +72,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -83,6 +87,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -97,6 +102,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -111,6 +117,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -125,6 +132,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -139,6 +147,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -153,6 +162,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -167,6 +177,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
     Book(
@@ -181,6 +192,7 @@ val sampleBooks = listOf(
         0,
         "",
         "Default",
+        "",
         false
     ),
 )
@@ -195,7 +207,11 @@ val sampleCategories = listOf(
 
 @Composable
 fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
-    Card(modifier = Modifier.padding(vertical = 10.dp)) {
+    Card(
+        modifier = Modifier.padding(vertical = 10.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface),
+        shape = ShapeDefaults.ExtraLarge
+    ) {
         Column(modifier = modifier) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -205,7 +221,7 @@ fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.headlineMedium,
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 12.dp)
                 )
                 FilledTonalIconButton(onClick = { /*TODO*/ }) {
                     Icon(
@@ -217,13 +233,12 @@ fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(4.dp)
             ) {
                 items(books.size) { it ->
                     BookCard(
                         painter = painterResource(id = R.drawable.lightning_thief),
                         title = books[it].title!!,
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.padding(12.dp)
                     )
                 }
             }
