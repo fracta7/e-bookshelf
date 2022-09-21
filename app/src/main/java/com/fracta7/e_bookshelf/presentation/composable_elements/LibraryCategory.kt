@@ -223,9 +223,11 @@ fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
                     style = MaterialTheme.typography.headlineMedium,
                     modifier = Modifier.padding(start = 12.dp)
                 )
-                FilledTonalIconButton(onClick = { /*TODO*/ }) {
+                FilledTonalIconButton(
+                    onClick = { /*TODO*/ }
+                ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_baseline_edit_24),
+                        painter = painterResource(id = R.drawable.navigate_next_24px),
                         contentDescription = ""
                     )
                 }

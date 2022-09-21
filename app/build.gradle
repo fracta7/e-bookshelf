@@ -110,9 +110,11 @@ dependencies {
 
     //Raam Costa's navigation
     def nav_version = '1.7.21-beta'
-    implementation "io.github.raamcosta.compose-destinations:core:$nav_version"
+    //implementation "io.github.raamcosta.compose-destinations:core:$nav_version"
     implementation "io.github.raamcosta.compose-destinations:animations-core:$nav_version"
     ksp "io.github.raamcosta.compose-destinations:ksp:$nav_version"
+
+    implementation("io.coil-kt:coil-compose:2.2.1")
 }
 
 kapt {

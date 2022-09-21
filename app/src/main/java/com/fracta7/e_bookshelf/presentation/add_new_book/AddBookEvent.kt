@@ -4,4 +4,5 @@ sealed class AddBookEvent{
     object AddBook: AddBookEvent()
     data class SelectCategory(val selectedItem: String = ""): AddBookEvent()
     object ToggleState: AddBookEvent()
+    data class CheckBook(val isbn: String): AddBookEvent()
 }
