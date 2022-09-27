@@ -4,8 +4,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -19,11 +21,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,11 +54,9 @@ fun AnimatedVisibilityScope.AddBookScreen(
     var publisher by remember { mutableStateOf("") }
     var publish_date by remember { mutableStateOf("") }
     var number_of_pages by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
-    var genre by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    var painter = rememberAsyncImagePainter(
+    val painter = rememberAsyncImagePainter(
         ImageRequest.Builder(LocalContext.current).data(data = viewModel.state.book.cover)
             .apply(block = fun ImageRequest.Builder.() {
                 placeholder(R.drawable.book_cover)
@@ -140,7 +140,13 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                 singleLine = true,
                                 modifier = Modifier
                                     .padding(start = 12.dp, top = 12.dp, end = 12.dp)
-                                    .fillMaxWidth()
+                                    .fillMaxWidth(),
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.barcode_24px),
+                                        contentDescription = null
+                                    )
+                                }
                             )
                             Text(
                                 text = viewModel.state.status,
@@ -177,6 +183,12 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                     .padding(start = 12.dp, bottom = 12.dp, end = 12.dp)
                                     .fillMaxWidth(),
                                 label = { Text(text = "Select the genre") },
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(R.drawable.theater_comedy_24px),
+                                        contentDescription = null
+                                    )
+                                },
                                 trailingIcon = {
                                     Icon(
                                         icon,
@@ -185,12 +197,7 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             expanded = !expanded
                                         })
                                 },
-                                enabled = false,
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    disabledBorderColor = selectColor,
-                                    disabledLabelColor = selectColor,
-                                    disabledTextColor = MaterialTheme.colorScheme.onSurfaceVariant
-                                ),
+                                readOnly = true,
                                 shape = ShapeDefaults.Large
                             )
 
@@ -199,12 +206,11 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                 onDismissRequest = {
                                     expanded = false
                                 },
-                                modifier = Modifier
-                                    .fillMaxWidth(0.93f)
+                                offset = DpOffset(64.dp, 12.dp)
                             ) {
                                 LazyColumn(
                                     modifier = Modifier.size(
-                                        width = with(LocalDensity.current) { textFiledSize.width.toDp() },
+                                        width = 220.dp,
                                         height = 500.dp
                                     )
                                 ) {
@@ -226,8 +232,16 @@ fun AnimatedVisibilityScope.AddBookScreen(
 
                             //animate info section depending on the available info individually
                             AnimatedVisibility(viewModel.state.isBookAvailable) {
-                                Column{
-                                    AnimatedVisibility(viewModel.state.author!="") {
+                                Column {
+                                    AnimatedVisibility(viewModel.state.title != "") {
+                                        InfoSection(
+                                            painter = painterResource(id = R.drawable.title_24px),
+                                            modifier = Modifier.padding(start = 16.dp, 4.dp),
+                                            label = "Title",
+                                            text = viewModel.state.title
+                                        )
+                                    }
+                                    AnimatedVisibility(viewModel.state.author != "") {
                                         InfoSection(
                                             painter = painterResource(id = R.drawable.person_24px),
                                             modifier = Modifier.padding(start = 16.dp, 4.dp),
@@ -235,7 +249,7 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             text = viewModel.state.author
                                         )
                                     }
-                                    AnimatedVisibility(viewModel.state.publisher!=""){
+                                    AnimatedVisibility(viewModel.state.publisher != "") {
                                         InfoSection(
                                             painter = painterResource(id = R.drawable.apartment_24px),
                                             modifier = Modifier.padding(start = 16.dp, 4.dp),
@@ -243,7 +257,7 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             text = viewModel.state.publisher
                                         )
                                     }
-                                    AnimatedVisibility(viewModel.state.publish_places!=""){
+                                    AnimatedVisibility(viewModel.state.publish_places != "") {
                                         InfoSection(
                                             painter = painterResource(id = R.drawable.location_on_24px),
                                             modifier = Modifier.padding(start = 16.dp, 4.dp),
@@ -251,7 +265,7 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             text = viewModel.state.publish_places
                                         )
                                     }
-                                    AnimatedVisibility(viewModel.state.publish_date!=""){
+                                    AnimatedVisibility(viewModel.state.publish_date != "") {
                                         InfoSection(
                                             painter = painterResource(id = R.drawable.event_24px),
                                             modifier = Modifier.padding(start = 16.dp, 4.dp),
@@ -259,7 +273,7 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             text = viewModel.state.publish_date
                                         )
                                     }
-                                    AnimatedVisibility(viewModel.state.page_count!="0"||viewModel.state.page_count!=""){
+                                    AnimatedVisibility(viewModel.state.page_count != "0") {
                                         InfoSection(
                                             painter = painterResource(id = R.drawable.numbers_24px),
                                             modifier = Modifier.padding(start = 16.dp, 4.dp),
@@ -267,7 +281,7 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             text = viewModel.state.page_count
                                         )
                                     }
-                                    AnimatedVisibility(viewModel.state.weight!=""){
+                                    AnimatedVisibility(viewModel.state.weight != "") {
                                         InfoSection(
                                             painter = painterResource(id = R.drawable.scale_24px),
                                             modifier = Modifier.padding(start = 16.dp, 4.dp),
@@ -277,116 +291,6 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                     }
                                 }
                             }
-/*
-                            //info section
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(12.dp)
-                            ) {
-                                val color = MaterialTheme.colorScheme.secondaryContainer
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(0.5f),
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Top
-                                ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.person_24px),
-                                            contentDescription = "author icon",
-                                            modifier = Modifier
-                                                .drawBehind {
-                                                    drawCircle(color = color, radius = size.width/1.5f)
-                                                },
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                        Column(modifier = Modifier.padding(6.dp)) {
-                                            Text(
-                                                text = "Author",
-                                                style = MaterialTheme.typography.labelMedium
-                                            )
-                                            Text(
-                                                text = viewModel.state.author,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-                                    }
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.event_24px),
-                                            contentDescription = "author icon",
-                                            modifier = Modifier
-                                                .drawBehind {
-                                                    drawCircle(color = color, radius = size.width/1.5f)
-                                                },
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                        Column(modifier = Modifier.padding(6.dp)) {
-                                            Text(
-                                                text = "Published Date",
-                                                style = MaterialTheme.typography.labelMedium
-                                            )
-                                            Text(
-                                                text = viewModel.state.publish_date,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-                                    }
-                                }
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(0.5f),
-                                    horizontalAlignment = Alignment.Start,
-                                    verticalArrangement = Arrangement.Top
-                                ) {
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.numbers_24px),
-                                            contentDescription = "author icon",
-                                            modifier = Modifier
-                                                .drawBehind {
-                                                    drawCircle(color = color, radius = size.width/1.5f)
-                                                },
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                        Column(modifier = Modifier.padding(6.dp)) {
-                                            Text(
-                                                text = "Page Count",
-                                                style = MaterialTheme.typography.labelMedium
-                                            )
-                                            Text(
-                                                text = viewModel.state.page_count,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-                                    }
-                                    Row(verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(
-                                            painter = painterResource(id = R.drawable.location_on_24px),
-                                            contentDescription = "author icon",
-                                            modifier = Modifier
-                                                .drawBehind {
-                                                    drawCircle(color = color, radius = size.width/1.5f)
-                                                },
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                        Column(modifier = Modifier.padding(6.dp)) {
-                                            Text(
-                                                text = "Published Places",
-                                                style = MaterialTheme.typography.labelMedium
-                                            )
-                                            Text(
-                                                text = viewModel.state.publish_places,
-                                                style = MaterialTheme.typography.labelSmall,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                            */
-//end of info panel
                         }
                         Row(
                             modifier = Modifier.padding(12.dp),
@@ -428,8 +332,13 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                         keyboardOptions = KeyboardOptions(
                                             imeAction = ImeAction.Next
                                         ),
-                                        enabled = !viewModel.state.isBookAvailable,
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier.fillMaxWidth(),
+                                        leadingIcon = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.title_24px),
+                                                contentDescription = null
+                                            )
+                                        }
                                     )
                                     OutlinedTextField(
                                         value = author,
@@ -440,8 +349,13 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                         keyboardOptions = KeyboardOptions(
                                             imeAction = ImeAction.Next
                                         ),
-                                        enabled = !viewModel.state.isBookAvailable,
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier.fillMaxWidth(),
+                                        leadingIcon = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.person_24px),
+                                                contentDescription = null
+                                            )
+                                        }
                                     )
                                     OutlinedTextField(
                                         value = publisher,
@@ -452,8 +366,13 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                         keyboardOptions = KeyboardOptions(
                                             imeAction = ImeAction.Next
                                         ),
-                                        enabled = !viewModel.state.isBookAvailable,
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier.fillMaxWidth(),
+                                        leadingIcon = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.apartment_24px),
+                                                contentDescription = null
+                                            )
+                                        }
                                     )
                                     OutlinedTextField(
                                         value = publish_date,
@@ -465,8 +384,13 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             keyboardType = KeyboardType.Number,
                                             imeAction = ImeAction.Next
                                         ),
-                                        enabled = !viewModel.state.isBookAvailable,
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier.fillMaxWidth(),
+                                        leadingIcon = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.event_24px),
+                                                contentDescription = null
+                                            )
+                                        }
                                     )
                                     OutlinedTextField(
                                         value = number_of_pages,
@@ -478,18 +402,26 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                             imeAction = ImeAction.Done
                                         ),
                                         singleLine = true,
-                                        enabled = !viewModel.state.isBookAvailable,
-                                        modifier = Modifier.fillMaxWidth()
+                                        modifier = Modifier.fillMaxWidth(),
+                                        leadingIcon = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.numbers_24px),
+                                                contentDescription = null
+                                            )
+                                        }
                                     )
                                     OutlinedTextField(
                                         value = description,
                                         onValueChange = { description = it },
                                         label = { Text("Description (optional)") },
-                                        modifier = Modifier
-                                            .height(100.dp)
-                                            .fillMaxWidth(),
+                                        modifier = Modifier.fillMaxWidth(),
                                         shape = ShapeDefaults.Large,
-                                        enabled = !viewModel.state.isBookAvailable
+                                        leadingIcon = {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.description_24px),
+                                                contentDescription = null
+                                            )
+                                        }
                                     )
                                 }
                             }

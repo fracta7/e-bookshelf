@@ -19,10 +19,11 @@ data class AddBookState(
         isbn = "",
         title = ""
     ),
+    val title: String = "",
     val author: String = "",
     val publisher: String = "",
     val publish_date: String = "",
-    val page_count: String = "",
+    val page_count: String = "0",
     val description: String = "",
     val publish_places: String = "",
     val weight: String = "",

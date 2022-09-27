@@ -54,7 +54,8 @@ class AddBookViewModel @Inject constructor(private val repository: AppRepository
                                     page_count = it.data.page_count.toString(),
                                     weight = it.data.weight!!,
                                     publish_places = it.data.publish_places!!,
-                                    isBookAvailable = true
+                                    isBookAvailable = true,
+                                    title = it.data.title!!
                                 )
                             }
                         }

@@ -33,7 +33,7 @@ fun InfoSection(
                 },
             tint = tintColor
         )
-        Column(modifier = Modifier.padding(6.dp)) {
+        Column(modifier = Modifier.padding(8.dp)) {
             Text(text = label, style = MaterialTheme.typography.labelMedium)
             Text(text = text, style = MaterialTheme.typography.labelSmall)
         }

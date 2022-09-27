@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/E-bookshelf.iml" filepath="$PROJECT_DIR$/.idea/modules/E-bookshelf.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/E-bookshelf.app.unitTest.iml" />
     </modules>
