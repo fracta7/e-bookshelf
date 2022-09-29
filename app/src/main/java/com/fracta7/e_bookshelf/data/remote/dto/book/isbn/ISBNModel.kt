@@ -1,5 +1,6 @@
 package com.fracta7.e_bookshelf.data.remote.dto.book.isbn
 
+import androidx.annotation.Keep
 import com.fracta7.e_bookshelf.data.remote.dto.book.isbn.authors.AuthorsModel
 import com.fracta7.e_bookshelf.data.remote.dto.book.isbn.classifications.ClassificationsModel
 import com.fracta7.e_bookshelf.data.remote.dto.book.isbn.covers.CoversModel
@@ -16,6 +17,7 @@ import com.fracta7.e_bookshelf.data.remote.dto.book.isbn.subjects.SubjectsModel
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class ISBNModel(
     @SerializedName("bib_key")
     @Expose

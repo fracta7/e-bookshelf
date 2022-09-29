@@ -2,6 +2,7 @@ package com.fracta7.e_bookshelf.presentation.entry
 
 import android.app.Activity
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,8 +19,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.fracta7.e_bookshelf.R
 import com.fracta7.e_bookshelf.domain.model.Genres
 import com.fracta7.e_bookshelf.presentation.composable_elements.LibraryCategory
-import com.fracta7.e_bookshelf.presentation.composable_elements.sampleBooks
 import com.fracta7.e_bookshelf.presentation.destinations.AddBookScreenDestination
+import com.fracta7.e_bookshelf.presentation.destinations.CategoryViewDestination
 import com.fracta7.e_bookshelf.presentation.ui.theme.EbookshelfTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -49,16 +50,18 @@ fun AnimatedVisibilityScope.EntryPoint(
             enabled = viewModel.state.drawerState.isClosed
         )
     } else {
-        BackHandler(onBack = {
-            scope.launch {
-                viewModel.state.drawerState.close()
-            }
-        },
-        enabled = viewModel.state.drawerState.isOpen)
+        BackHandler(
+            onBack = {
+                scope.launch {
+                    viewModel.state.drawerState.close()
+                }
+            },
+            enabled = viewModel.state.drawerState.isOpen
+        )
     }
     var selected by remember { mutableStateOf(false) }
     EbookshelfTheme(darkTheme = viewModel.state.darkTheme, dynamicColor = false) {
-        Surface(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
+        Surface() {
             if (showDialog) {
                 AlertDialog(
                     onDismissRequest = {
@@ -89,6 +92,7 @@ fun AnimatedVisibilityScope.EntryPoint(
                     }
                 )
             }
+
             ModalNavigationDrawer(
                 drawerContent = {
                     ModalDrawerSheet(modifier = Modifier.fillMaxWidth(0.7f)) {
@@ -147,6 +151,7 @@ fun AnimatedVisibilityScope.EntryPoint(
                 drawerState = viewModel.state.drawerState
             ) {
                 Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                     topBar = {
                         LargeTopAppBar(
                             title = {
@@ -175,21 +180,58 @@ fun AnimatedVisibilityScope.EntryPoint(
                             scrollBehavior = scrollBehavior
                         )
                     },
-                    content = {
+                    content = { it2 ->
+                        AnimatedVisibility(!viewModel.state.isDbEmpty) {
+                            LazyColumn(
+                                contentPadding = it2,
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                items(Genres.list.size) { it1 ->
+                                    val currentGenre = Genres.list[it1]
+                                    val currentItem =
+                                        viewModel.state.books.filter { it.genre == Genres.list[it1] }
+                                    AnimatedVisibility(currentItem.isNotEmpty()) {
+                                        LibraryCategory(
+                                            title = currentGenre,
+                                            books = currentItem,
+                                            modifier = Modifier.padding(vertical = 12.dp),
+                                            navigator = navigator,
+                                            onClick = {
+                                                navigator.navigate(
+                                                    CategoryViewDestination(
+                                                        category = currentGenre,
+                                                        darkTheme = viewModel.state.darkTheme
+                                                    )
+                                                )
+                                            }
+                                        )
+                                    }
+                                }
+                                //
+                                /*
+                                items(Genres.list.size) { it1 ->
+                                    LibraryCategory(
+                                        title = Genres.list[it1],
+                                        books = sampleBooks,
+                                        modifier = Modifier.padding(vertical = 12.dp),
+                                        navigator = navigator,
+                                        onClick = {
+                                            navigator.navigate(
+                                                CategoryViewDestination(
+                                                    category = Genres.list[it1],
+                                                    darkTheme = viewModel.state.darkTheme
+                                                )
+                                            )
+                                        }
+                                    )
+                                }
 
-                        LazyColumn(
-                            contentPadding = it,
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            items(Genres.list.size) { it1 ->
-                                LibraryCategory(
-                                    title = Genres.list[it1],
-                                    books = sampleBooks,
-                                    modifier = Modifier.padding(vertical = 12.dp)
-                                )
+                                 */
+                                //
                             }
                         }
+
                     },
                     floatingActionButton = {
                         FloatingActionButton(
@@ -197,12 +239,13 @@ fun AnimatedVisibilityScope.EntryPoint(
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.add_24px),
-                                contentDescription = "add new book"
+                                contentDescription = "add a new book"
                             )
                         }
                     }
                 )
             }
         }
+
     }
 }

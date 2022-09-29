@@ -1,11 +1,6 @@
 package com.fracta7.e_bookshelf.data.local.database.remote
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "bookinfo")
 data class RawBookEntity(
-    @PrimaryKey val uid: Int? = null,
     val author: String?,
     val publishers: String?,
     val publish_date: String?,

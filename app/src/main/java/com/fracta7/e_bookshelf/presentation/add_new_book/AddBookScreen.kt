@@ -4,10 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -29,6 +27,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.fracta7.e_bookshelf.R
@@ -63,7 +62,6 @@ fun AnimatedVisibilityScope.AddBookScreen(
                 error(R.drawable.book_cover)
             }).build()
     )
-
     EbookshelfTheme(darkTheme = darkTheme) {
         Surface(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
             Scaffold(
@@ -229,10 +227,38 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                     }
                                 }
                             }
+                            OutlinedTextField(
+                                value = description,
+                                onValueChange = {
+                                    description = it
+                                    viewModel.state = viewModel.state.copy(description = it)
+                                },
+                                label = { Text("Description (optional)") },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 12.dp, bottom = 12.dp, end = 12.dp),
+                                shape = ShapeDefaults.Large,
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.description_24px),
+                                        contentDescription = null
+                                    )
+                                }
+                            )
 
                             //animate info section depending on the available info individually
                             AnimatedVisibility(viewModel.state.isBookAvailable) {
                                 Column {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        AsyncImage(
+                                            model = viewModel.state.book.cover,
+                                            contentDescription = "book cover",
+                                            modifier = Modifier.requiredSize(100.dp, 150.dp)
+                                        )
+                                    }
                                     AnimatedVisibility(viewModel.state.title != "") {
                                         InfoSection(
                                             painter = painterResource(id = R.drawable.title_24px),
@@ -312,16 +338,6 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface)
                             ) {
                                 Column(Modifier.padding(12.dp)) {
-                                    Column(
-                                        horizontalAlignment = Alignment.CenterHorizontally,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Image(
-                                            painter = painter,
-                                            contentDescription = "book cover",
-                                            modifier = Modifier.requiredSize(100.dp, 150.dp)
-                                        )
-                                    }
 
                                     OutlinedTextField(
                                         value = title,
@@ -406,19 +422,6 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                         leadingIcon = {
                                             Icon(
                                                 painter = painterResource(id = R.drawable.numbers_24px),
-                                                contentDescription = null
-                                            )
-                                        }
-                                    )
-                                    OutlinedTextField(
-                                        value = description,
-                                        onValueChange = { description = it },
-                                        label = { Text("Description (optional)") },
-                                        modifier = Modifier.fillMaxWidth(),
-                                        shape = ShapeDefaults.Large,
-                                        leadingIcon = {
-                                            Icon(
-                                                painter = painterResource(id = R.drawable.description_24px),
                                                 contentDescription = null
                                             )
                                         }

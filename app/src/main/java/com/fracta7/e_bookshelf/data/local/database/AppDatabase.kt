@@ -4,15 +4,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.fracta7.e_bookshelf.data.local.database.book.BookEntity
 import com.fracta7.e_bookshelf.data.local.database.book.BookEntityDao
-import com.fracta7.e_bookshelf.data.local.database.remote.RawBookEntity
-import com.fracta7.e_bookshelf.data.local.database.remote.RawBookEntityDao
+import com.fracta7.e_bookshelf.data.local.database.book.ReadingListEntity
+import com.fracta7.e_bookshelf.data.local.database.book.ReadingListEntityDao
 
 @Database(
-    entities = [BookEntity::class, RawBookEntity::class],
+    entities = [BookEntity::class, ReadingListEntity::class],
     version = 1,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun bookDao(): BookEntityDao
-    abstract fun bookInfoDao(): RawBookEntityDao
+    abstract fun readingList(): ReadingListEntityDao
 }

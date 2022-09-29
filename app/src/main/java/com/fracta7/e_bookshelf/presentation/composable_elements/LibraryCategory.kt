@@ -7,206 +7,26 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.fracta7.e_bookshelf.R
 import com.fracta7.e_bookshelf.domain.model.Book
+import com.fracta7.e_bookshelf.presentation.destinations.BookViewDestination
 import com.fracta7.e_bookshelf.presentation.ui.theme.EbookshelfTheme
-
-val sampleBooks = listOf(
-    Book(
-        "",
-        "",
-        "Lightning Thief",
-        "Rick Riordan",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Harry Potter",
-        "J.K. Rowling",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Lightning Thief",
-        "Rick Riordan",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Harry Potter",
-        "J.K. Rowling",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Lightning Thief",
-        "Rick Riordan",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Harry Potter",
-        "J.K. Rowling",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Lightning Thief",
-        "Rick Riordan",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Harry Potter",
-        "J.K. Rowling",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Lightning Thief",
-        "Rick Riordan",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Harry Potter",
-        "J.K. Rowling",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Lightning Thief",
-        "Rick Riordan",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-    Book(
-        "",
-        "",
-        "Harry Potter",
-        "J.K. Rowling",
-        "",
-        "",
-        "",
-        "",
-        0,
-        "",
-        "Default",
-        "",
-        false
-    ),
-)
-
-val sampleCategories = listOf(
-    "Fiction",
-    "SciFi",
-    "Romance",
-    "Drama",
-    "Science"
-)
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
-fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
+fun LibraryCategory(
+    title: String,
+    books: List<Book>,
+    modifier: Modifier,
+    navigator: DestinationsNavigator,
+    onClick: ()->Unit
+) {
     Card(
         modifier = Modifier.padding(vertical = 10.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.inverseOnSurface),
@@ -224,7 +44,7 @@ fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
                     modifier = Modifier.padding(start = 12.dp)
                 )
                 FilledTonalIconButton(
-                    onClick = { /*TODO*/ }
+                    onClick = { onClick() }
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.navigate_next_24px),
@@ -236,11 +56,13 @@ fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                items(books.size) { it ->
+
+                items(books.size) {
                     BookCard(
-                        painter = painterResource(id = R.drawable.lightning_thief),
-                        title = books[it].title!!,
-                        modifier = Modifier.padding(12.dp)
+                        url = books[it].cover.toString(),
+                        title = books[it].title.toString(),
+                        modifier = Modifier.padding(12.dp),
+                        onClick = { navigator.navigate(BookViewDestination(isbn = books[it].isbn.toString())) }
                     )
                 }
             }
@@ -248,28 +70,4 @@ fun LibraryCategory(title: String, books: List<Book>, modifier: Modifier) {
     }
 }
 
-@Preview
-@Composable
-fun CategoryPrevi() {
-    EbookshelfTheme() {
-        Surface() {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(
-                    text = "Library",
-                    style = MaterialTheme.typography.displayMedium,
-                    modifier = Modifier.padding(28.dp)
-                )
-                LazyColumn {
-                    items(sampleCategories.size) {
-                        LibraryCategory(
-                            title = sampleCategories[it],
-                            books = sampleBooks,
-                            modifier = Modifier.padding(12.dp)
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 

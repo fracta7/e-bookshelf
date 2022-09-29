@@ -11,5 +11,11 @@ interface AppRepository {
         isbn: String
     ): Flow<Resource<RawBook>>
 
-    suspend fun getAllBooks(): Flow<List<Book>>
+    suspend fun getAllBooks(): Flow<Resource<List<Book>>>
+
+    suspend fun insertBook(book: Book)
+
+    suspend fun deleteBook(isbn: String)
+
+    suspend fun deleteAll(book: Book)
 }

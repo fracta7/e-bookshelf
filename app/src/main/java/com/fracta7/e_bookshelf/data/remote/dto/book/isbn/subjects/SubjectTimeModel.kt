@@ -1,8 +1,10 @@
 package com.fracta7.e_bookshelf.data.remote.dto.book.isbn.subjects
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
+@Keep
 data class SubjectTimeModel(
     @SerializedName("url")
     @Expose

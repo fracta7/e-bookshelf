@@ -7,14 +7,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('/home/fracta7/fracta7-linux')
-            storePassword 'kalikali'
-            keyAlias 'key'
-            keyPassword 'kalikali'
-        }
-    }
     compileSdk 33
 
     defaultConfig {
@@ -28,7 +20,7 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        signingConfig signingConfigs.release
+        signingConfig signingConfigs.debug
     }
 
     buildTypes {

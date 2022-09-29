@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import com.fracta7.e_bookshelf.data.local.database.AppDatabase
 import com.fracta7.e_bookshelf.data.mapper.toBook
+import com.fracta7.e_bookshelf.data.mapper.toBookEntity
 import com.fracta7.e_bookshelf.data.mapper.toRawBook
 import com.fracta7.e_bookshelf.data.mapper.toRawBookEntity
 import com.fracta7.e_bookshelf.data.remote.BookAPI
@@ -94,24 +95,9 @@ class AppRepositoryImpl @Inject constructor(
     override suspend fun getBookByISBN(
         isbn: String
     ): Flow<Resource<RawBook>> {
-        val bookdb = db.bookInfoDao()
+
         return flow {
             emit(Resource.Loading(true))
-
-            val localBooks = bookdb.getAll()
-            val isDbEmpty = localBooks.isEmpty()
-
-            if (!isDbEmpty) {
-                val localBook = bookdb.searchByISBN(isbn)
-                emit(Resource.Success(localBook.toRawBook()))
-            }
-
-            val shouldLoadFromCache = !isDbEmpty
-
-            if (shouldLoadFromCache) {
-                emit(Resource.Loading(false))
-                return@flow
-            }
             var remoteBook: Resource<RawBook> = Resource.Loading(true)
             try {
                 val response = bookAPI.getBookByISBN(isbn)
@@ -140,10 +126,28 @@ class AppRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getAllBooks(): Flow<List<Book>> {
+    override suspend fun getAllBooks(): Flow<Resource<List<Book>>> {
         return flow {
-            emit(db.bookDao().getAll().map { it.toBook() })
+            emit(Resource.Loading())
+            val books = db.bookDao().getAll()
+            if (books.isEmpty()){
+                emit(Resource.Error("Database is empty"))
+            } else {
+                emit(Resource.Success(data = books.map { it.toBook() }))
+            }
         }
+    }
+
+    override suspend fun insertBook(book: Book) {
+        db.bookDao().insertBook(book.toBookEntity())
+    }
+
+    override suspend fun deleteBook(isbn: String) {
+        db.bookDao().delete(isbn)
+    }
+
+    override suspend fun deleteAll(book: Book) {
+        db.bookDao().deleteAll()
     }
 
 }

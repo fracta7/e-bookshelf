@@ -5,7 +5,6 @@ import com.fracta7.e_bookshelf.domain.model.Book
 
 fun BookEntity.toBook(): Book {
     return Book(
-        url = url,
         title = title,
         authors = authors,
         publishers = publishers,
@@ -17,13 +16,13 @@ fun BookEntity.toBook(): Book {
         readingList = readingList,
         favorite = favorite,
         isbn = isbn,
-        description = description
+        description = description,
+        genre = genre
     )
 }
 
 fun Book.toBookEntity(): BookEntity {
     return BookEntity(
-        url = url,
         title = title,
         authors = authors,
         publishers = publishers,
@@ -35,6 +34,7 @@ fun Book.toBookEntity(): BookEntity {
         readingList = readingList,
         favorite = favorite,
         isbn = isbn,
-        description = description
+        description = description,
+        genre = genre
     )
 }

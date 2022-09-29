@@ -2,7 +2,6 @@ package com.fracta7.e_bookshelf.domain.model
 
 data class Book(
     val isbn: String?,
-    val url: String?,
     val title: String?,
     val authors: String?,
     val publishers: String?,
@@ -12,6 +11,7 @@ data class Book(
     val number_of_pages: Int?,
     val weight: String?,
     val readingList: String? = "Default",
+    val genre: String?,
     val description: String?,
     val favorite: Boolean?
 )

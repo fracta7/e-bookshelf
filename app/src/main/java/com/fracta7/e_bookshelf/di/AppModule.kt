@@ -2,6 +2,9 @@ package com.fracta7.e_bookshelf.di
 
 import android.app.Application
 import androidx.room.Room
+import coil.ImageLoader
+import coil.disk.DiskCache
+import coil.memory.MemoryCache
 import com.fracta7.e_bookshelf.data.local.database.AppDatabase
 import com.fracta7.e_bookshelf.data.remote.BookAPI
 import com.fracta7.e_bookshelf.data.repository.AppRepositoryImpl
@@ -35,13 +38,24 @@ object AppModule {
             app,
             AppDatabase::class.java,
             "book-database"
-        )
-            .build()
+        ).build()
     }
 
     @Provides
     @Singleton
-    fun provideAppRepository(bookAPI: BookAPI, database: AppDatabase): AppRepository {
-        return AppRepositoryImpl(bookAPI, database)
+    fun providesImageLoader(app: Application): ImageLoader{
+        return ImageLoader.Builder(app)
+            .memoryCache {
+                MemoryCache.Builder(app)
+                    .maxSizePercent(0.25)
+                    .build()
+            }
+            .diskCache {
+                DiskCache.Builder()
+                    .directory(app.cacheDir.resolve("image_cache"))
+                    .maxSizePercent(0.02)
+                    .build()
+            }
+            .build()
     }
 }

@@ -1,8 +1,11 @@
 package com.fracta7.e_bookshelf.presentation.add_new_book
 
+import com.fracta7.e_bookshelf.domain.model.Book
 import com.fracta7.e_bookshelf.domain.model.RawBook
 
 data class AddBookState(
+    val books: List<Book> = emptyList(),
+    val isbn: String = "",
     val isBookAvailable: Boolean = false,
     val selectedCategory: String = "",
     val url: String = "",
@@ -27,5 +30,7 @@ data class AddBookState(
     val description: String = "",
     val publish_places: String = "",
     val weight: String = "",
-    val manual: Boolean = false
+    val manual: Boolean = false,
+    val isBookPresent: Boolean = false,
+    val selectedReadingList: String = "Default"
 )
