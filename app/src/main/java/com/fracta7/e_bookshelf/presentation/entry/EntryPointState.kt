@@ -11,5 +11,6 @@ data class EntryPointState @OptIn(ExperimentalMaterial3Api::class) constructor(
     val isLoading: Boolean = false,
     val drawerState: DrawerState = DrawerState(DrawerValue.Closed),
     val isDbEmpty: Boolean = true,
+    val dynamicTheme: Boolean = false,
     val books: List<Book> = emptyList()
 )

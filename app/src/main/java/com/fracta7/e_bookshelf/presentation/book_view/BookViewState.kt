@@ -7,5 +7,7 @@ import com.fracta7.e_bookshelf.domain.model.Book
 
 data class BookViewState(
     val book: Book? = null,
-    val isEditMode: Boolean = false
+    val isEditMode: Boolean = false,
+    val darkTheme: Boolean = true,
+    val dynamicTheme: Boolean = false
 )

@@ -1,9 +1,6 @@
 package com.fracta7.e_bookshelf.presentation.book_view
 
-import android.content.ContentValues.TAG
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,7 +18,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.fracta7.e_bookshelf.R
 import com.fracta7.e_bookshelf.presentation.composable_elements.InfoSection
@@ -33,20 +29,24 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun BookView(navigator: DestinationsNavigator, darkTheme: Boolean = true, isbn: String) {
+fun BookView(navigator: DestinationsNavigator, isbn: String) {
     val viewModel = hiltViewModel<BookViewViewModel>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     LaunchedEffect(Unit) {
         viewModel.onEvent(BookViewEvent.LoadBook(isbn))
     }
 
-    EbookshelfTheme(darkTheme = darkTheme) {
+    EbookshelfTheme(darkTheme = viewModel.state.darkTheme, dynamicColor = viewModel.state.dynamicTheme) {
         Surface(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
             Scaffold(
                 topBar = {
                     LargeTopAppBar(
                         title = {
-                            Text(text = viewModel.state.book?.title.toString(), overflow = TextOverflow.Ellipsis, maxLines = 2)
+                            Text(
+                                text = viewModel.state.book?.title.toString(),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 2
+                            )
                         },
                         navigationIcon = {
                             IconButton(onClick = {
@@ -75,14 +75,18 @@ fun BookView(navigator: DestinationsNavigator, darkTheme: Boolean = true, isbn: 
                                             .data(viewModel.state.book?.cover.toString())
                                             .build(),
                                         contentDescription = "book cover",
-                                        modifier = Modifier.requiredSize(200.dp, 300.dp)
+                                        modifier = Modifier.requiredSize(200.dp, 300.dp),
+                                        placeholder = painterResource(id = R.drawable.image_48px),
+                                        error = painterResource(id = R.drawable.image_48px)
                                     )
                                 }
                             }
                             item {
-                                Column(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(12.dp)) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(12.dp)
+                                ) {
                                     AnimatedVisibility(
                                         viewModel.state.book?.title != ""
                                     ) {
@@ -163,11 +167,18 @@ fun BookView(navigator: DestinationsNavigator, darkTheme: Boolean = true, isbn: 
 
                 },
                 floatingActionButton = {
-                    FloatingActionButton(onClick = {
-                        viewModel.onEvent(BookViewEvent.DeleteBook(viewModel.state.book?.isbn!!))
-                        navigator.navigate(EntryPointDestination)
-                    }) {
-
+                    FloatingActionButton(
+                        onClick = {
+                            viewModel.onEvent(BookViewEvent.DeleteBook(viewModel.state.book?.isbn!!))
+                            navigator.navigate(EntryPointDestination)
+                        },
+                        containerColor = MaterialTheme.colorScheme.errorContainer,
+                        contentColor = MaterialTheme.colorScheme.onErrorContainer
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.delete_forever_24px),
+                            contentDescription = "delete"
+                        )
                     }
                 }
             )

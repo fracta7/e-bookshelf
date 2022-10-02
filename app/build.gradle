@@ -107,6 +107,9 @@ dependencies {
     ksp "io.github.raamcosta.compose-destinations:ksp:$nav_version"
 
     implementation("io.coil-kt:coil-compose:2.2.1")
+
+    //data store
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 }
 
 kapt {

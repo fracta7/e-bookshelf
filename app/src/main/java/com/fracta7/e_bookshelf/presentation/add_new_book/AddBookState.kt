@@ -32,5 +32,7 @@ data class AddBookState(
     val weight: String = "",
     val manual: Boolean = false,
     val isBookPresent: Boolean = false,
-    val selectedReadingList: String = "Default"
+    val selectedReadingList: String = "Default",
+    val darkTheme: Boolean = true,
+    val dynamicTheme: Boolean = false
 )

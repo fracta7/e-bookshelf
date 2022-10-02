@@ -1,7 +1,6 @@
 package com.fracta7.e_bookshelf.data.local.database.book
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 

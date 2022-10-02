@@ -18,6 +18,19 @@ class BookViewViewModel @Inject constructor(
 ) : ViewModel() {
     var state by mutableStateOf(BookViewState())
 
+    init {
+        viewModelScope.launch {
+            repository.getDarkSettings().collect{
+                state = state.copy(darkTheme = it)
+            }
+        }
+        viewModelScope.launch {
+            repository.getDynamicSettings().collect{
+                state = state.copy(dynamicTheme = it)
+            }
+        }
+    }
+
     fun onEvent(event: BookViewEvent){
         when(event){
             is BookViewEvent.LoadBook->{

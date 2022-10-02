@@ -1,7 +1,14 @@
 package com.fracta7.e_bookshelf.data.repository
 
+import android.app.Application
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.util.Log
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import com.fracta7.e_bookshelf.data.local.database.AppDatabase
 import com.fracta7.e_bookshelf.data.mapper.toBook
 import com.fracta7.e_bookshelf.data.mapper.toBookEntity
@@ -15,6 +22,7 @@ import com.fracta7.e_bookshelf.domain.repository.AppRepository
 import com.fracta7.e_bookshelf.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -23,10 +31,12 @@ import javax.inject.Singleton
 @Singleton
 class AppRepositoryImpl @Inject constructor(
     private val bookAPI: BookAPI,
-    private val database: AppDatabase
+    private val db: AppDatabase,
+    private val application: Application
 ) : AppRepository {
-
-    private val db = database
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+    val darkTheme = booleanPreferencesKey("dark_theme")
+    val dynamicTheme = booleanPreferencesKey("dynamic_theme")
 
     private fun convertResponseToBook(
         isbn: String,
@@ -130,7 +140,7 @@ class AppRepositoryImpl @Inject constructor(
         return flow {
             emit(Resource.Loading())
             val books = db.bookDao().getAll()
-            if (books.isEmpty()){
+            if (books.isEmpty()) {
                 emit(Resource.Error("Database is empty"))
             } else {
                 emit(Resource.Success(data = books.map { it.toBook() }))
@@ -146,7 +156,31 @@ class AppRepositoryImpl @Inject constructor(
         db.bookDao().delete(isbn)
     }
 
-    override suspend fun deleteAll(book: Book) {
+    override suspend fun getDynamicSettings(): Flow<Boolean> {
+        return application.dataStore.data.map {
+            it[dynamicTheme] ?: false
+        }
+    }
+
+    override suspend fun setDynamicSettings(dynamic: Boolean) {
+        application.dataStore.edit {
+            it[dynamicTheme] = dynamic
+        }
+    }
+
+    override suspend fun getDarkSettings(): Flow<Boolean> {
+        return application.dataStore.data.map {
+            it[darkTheme] ?: true
+        }
+    }
+
+    override suspend fun setDarkSettings(dark: Boolean) {
+        application.dataStore.edit {
+            it[darkTheme] = dark
+        }
+    }
+
+    override suspend fun deleteAll() {
         db.bookDao().deleteAll()
     }
 

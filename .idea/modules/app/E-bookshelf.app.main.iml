@@ -14,6 +14,7 @@
           <stringArguments>
             <stringArg name="classpath">
               <args>
+                <arg>$MODULE_DIR$/../../../app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/a5771226eca3aae34c2d505ad84292f7/transformed/hilt-navigation-compose-1.0.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/fbcba34baca121775ec786eea49cb6f6/transformed/animations-core-1.7.21-beta-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/1779775158750e9e0d5679d0a6098dcd/transformed/core-1.7.21-beta-api.jar</arg>
@@ -54,6 +55,10 @@
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/76233224dab8d0df5483f026dd7f91fc/transformed/activity-1.5.1-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/c0441411f1b9a97ae87aa3819a8c90b8/transformed/lifecycle-viewmodel-savedstate-2.5.1-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/14874f01ae18f0ce1b8198aeb0f72fa6/transformed/lifecycle-viewmodel-ktx-2.5.1-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/64d80eafffa5940bbd92b0076e32d25f/transformed/datastore-preferences-1.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/transforms-3/da9a847965db0b3aca64e66c753cddf3/transformed/datastore-1.0.0-api.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.datastore/datastore-preferences-core/1.0.0/403f64499b9a8994f5f7010329ddd1ee5c919ed5/datastore-preferences-core-1.0.0.jar</arg>
+                <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.datastore/datastore-core/1.0.0/91b04fb657294e2906d95dce6a9e5a851f6125c1/datastore-core-1.0.0.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/eca460022afcb33a55868ba28d8e0a7f/transformed/animation-core-1.3.0-beta02-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm/1.6.4/2c997cd1c0ef33f3e751d3831929aeff1390cb30/kotlinx-coroutines-core-jvm-1.6.4.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/9a0047b9b4a5e5a84dc688e293fd7bf0/transformed/coil-2.2.1-api.jar</arg>
@@ -233,6 +238,8 @@
     <orderEntry type="library" name="Gradle: com.squareup.okio:okio-jvm:3.2.0" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.retrofit2:converter-gson:2.9.0" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.gson:gson:2.8.5" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.datastore:datastore-core:1.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.datastore:datastore-preferences-core:1.0.0" level="project" />
     <orderEntry type="library" name="Gradle: androidx.compose.ui:ui-tooling:1.3.0-beta01@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.compose.runtime:runtime:1.3.0-beta02@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.compose.ui:ui:1.3.0-beta02@aar" level="project" />
@@ -315,5 +322,7 @@
     <orderEntry type="library" name="Gradle: io.coil-kt:coil-compose-base:2.2.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: io.coil-kt:coil-base:2.2.1@aar" level="project" />
     <orderEntry type="library" name="Gradle: io.coil-kt:coil:2.2.1@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.datastore:datastore-preferences:1.0.0@aar" level="project" />
+    <orderEntry type="library" name="Gradle: androidx.datastore:datastore:1.0.0@aar" level="project" />
   </component>
 </module>

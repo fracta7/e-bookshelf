@@ -18,6 +18,7 @@ import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.fracta7.e_bookshelf.R
+import com.fracta7.e_bookshelf.presentation.composable_elements.ExpandedBookCard
 import com.fracta7.e_bookshelf.presentation.destinations.BookViewDestination
 import com.fracta7.e_bookshelf.presentation.ui.theme.EbookshelfTheme
 import com.ramcosta.composedestinations.annotation.Destination
@@ -26,10 +27,10 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun CategoryView(navigator: DestinationsNavigator, category: String, darkTheme: Boolean = true) {
+fun CategoryView(navigator: DestinationsNavigator, category: String) {
     val viewModel = hiltViewModel<CategoryViewViewModel>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    EbookshelfTheme(darkTheme = darkTheme) {
+    EbookshelfTheme(darkTheme = viewModel.state.darkTheme, dynamicColor = viewModel.state.dynamicTheme) {
         Surface(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
             Scaffold(
                 topBar = {
@@ -55,73 +56,7 @@ fun CategoryView(navigator: DestinationsNavigator, category: String, darkTheme: 
                         val filteredBooks = viewModel.state.books.filter { it.genre == category }
                         items(filteredBooks.size) {
                             val currentBook = filteredBooks[it]
-                            val painter = rememberAsyncImagePainter(
-                                ImageRequest.Builder(LocalContext.current)
-                                    .data(data = currentBook.cover)
-                                    .apply(block = fun ImageRequest.Builder.() {
-                                        placeholder(R.drawable.lightning_thief)
-                                        error(R.drawable.harry_potter)
-                                    }).build()
-                            )
-                            Card(
-                                modifier = Modifier
-                                    .padding(vertical = 12.dp)
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        //navigate to current book if clicked
-                                        navigator.navigate(
-                                            BookViewDestination(
-                                                isbn = currentBook.isbn.toString(),
-                                                darkTheme = darkTheme
-                                            )
-                                        )
-                                    }
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(12.dp),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.Top
-                                ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(0.40f)
-                                            .padding(8.dp),
-                                        horizontalAlignment = Alignment.CenterHorizontally
-                                    ) {
-                                        AsyncImage(
-                                            model = currentBook.cover,
-                                            contentDescription = "book cover",
-                                            modifier = Modifier
-                                                .requiredSize(150.dp, 225.dp)
-                                                .padding(12.dp)
-                                        )
-                                    }
-                                    Column(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(0.60f)
-                                            .padding(8.dp)
-                                    ) {
-                                        Text(
-                                            text = currentBook.title.toString(),
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                        Spacer(modifier = Modifier.padding(6.dp))
-                                        Text(
-                                            text = currentBook.authors.toString(),
-                                            style = MaterialTheme.typography.bodyMedium
-                                        )
-                                        Spacer(modifier = Modifier.padding(4.dp))
-                                        Text(
-                                            text = currentBook.publish_date.toString(),
-                                            style = MaterialTheme.typography.bodySmall
-                                        )
-                                    }
-                                }
-                            }
+                            ExpandedBookCard(navigator = navigator, book = currentBook)
                         }
                     }
                 }

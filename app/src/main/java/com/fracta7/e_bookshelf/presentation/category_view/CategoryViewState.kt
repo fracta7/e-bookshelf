@@ -6,5 +6,7 @@ data class CategoryViewState(
     val books: List<Book> = emptyList(),
     val isLoading: Boolean = true,
     val isDbEmpty: Boolean = true,
-    val isEditMode: Boolean = false
+    val isEditMode: Boolean = false,
+    val darkTheme: Boolean = true,
+    val dynamicTheme: Boolean = false
 )

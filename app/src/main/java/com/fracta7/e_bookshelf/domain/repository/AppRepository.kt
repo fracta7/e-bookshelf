@@ -1,7 +1,9 @@
 package com.fracta7.e_bookshelf.domain.repository
 
+import androidx.datastore.preferences.core.Preferences
 import com.fracta7.e_bookshelf.domain.model.Book
 import com.fracta7.e_bookshelf.domain.model.RawBook
+import com.fracta7.e_bookshelf.domain.model.Settings
 import com.fracta7.e_bookshelf.util.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -17,5 +19,13 @@ interface AppRepository {
 
     suspend fun deleteBook(isbn: String)
 
-    suspend fun deleteAll(book: Book)
+    suspend fun deleteAll()
+
+    suspend fun getDarkSettings(): Flow<Boolean>
+
+    suspend fun getDynamicSettings(): Flow<Boolean>
+
+    suspend fun setDarkSettings(dark: Boolean)
+
+    suspend fun setDynamicSettings(dynamic: Boolean)
 }

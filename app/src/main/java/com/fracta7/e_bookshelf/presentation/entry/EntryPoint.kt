@@ -1,9 +1,10 @@
 package com.fracta7.e_bookshelf.presentation.entry
 
 import android.app.Activity
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
@@ -15,9 +16,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fracta7.e_bookshelf.R
+import com.fracta7.e_bookshelf.domain.model.Book
 import com.fracta7.e_bookshelf.domain.model.Genres
+import com.fracta7.e_bookshelf.presentation.composable_elements.ExpandedBookCard
 import com.fracta7.e_bookshelf.presentation.composable_elements.LibraryCategory
 import com.fracta7.e_bookshelf.presentation.destinations.AddBookScreenDestination
 import com.fracta7.e_bookshelf.presentation.destinations.CategoryViewDestination
@@ -33,12 +38,11 @@ import kotlinx.coroutines.launch
     ExperimentalMaterial3Api::class
 )
 @Composable
-fun AnimatedVisibilityScope.EntryPoint(
+fun EntryPoint(
     navigator: DestinationsNavigator
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val activity = LocalContext.current as? Activity
-
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val scope = rememberCoroutineScope()
     val viewModel = hiltViewModel<EntryPointViewModel>()
@@ -59,8 +63,15 @@ fun AnimatedVisibilityScope.EntryPoint(
             enabled = viewModel.state.drawerState.isOpen
         )
     }
-    var selected by remember { mutableStateOf(false) }
-    EbookshelfTheme(darkTheme = viewModel.state.darkTheme, dynamicColor = false) {
+    val items = listOf(0, 1, 2)
+    val navItems = listOf("Home", "Categories", "Settings")
+    val navIcons = listOf(R.drawable.home_24px, R.drawable.category_24px, R.drawable.tune_24px)
+    val selectedItem = remember { mutableStateOf(items[0]) }
+    var title by remember { mutableStateOf("Home") }
+    EbookshelfTheme(
+        darkTheme = viewModel.state.darkTheme,
+        dynamicColor = viewModel.state.dynamicTheme
+    ) {
         Surface() {
             if (showDialog) {
                 AlertDialog(
@@ -131,18 +142,21 @@ fun AnimatedVisibilityScope.EntryPoint(
                         Divider(modifier = Modifier.fillMaxWidth())
 
                         LazyColumn() {
-                            Genres.list.forEach { item ->
-                                item {
-                                    NavigationDrawerItem(
-                                        label = {
-                                            Text(
-                                                text = item,
-                                                style = MaterialTheme.typography.bodyLarge
-                                            )
-                                        },
-                                        selected = selected,
-                                        onClick = { /*TODO*/ })
-                                }
+                            items(navItems.size) {
+                                NavigationDrawerItem(
+                                    icon = {
+                                        Icon(
+                                            painter = painterResource(id = navIcons[it]),
+                                            contentDescription = navItems[it]
+                                        )
+                                    },
+                                    label = { Text(navItems[it]) },
+                                    selected = selectedItem.value == it,
+                                    onClick = {
+                                        selectedItem.value = it
+                                        title = navItems[it]
+                                        scope.launch { viewModel.closeDrawer() }
+                                    })
                             }
                         }
 
@@ -156,7 +170,7 @@ fun AnimatedVisibilityScope.EntryPoint(
                         LargeTopAppBar(
                             title = {
                                 Text(
-                                    text = "Library",
+                                    text = title,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     style = MaterialTheme.typography.headlineMedium
@@ -181,61 +195,44 @@ fun AnimatedVisibilityScope.EntryPoint(
                         )
                     },
                     content = { it2 ->
-                        AnimatedVisibility(!viewModel.state.isDbEmpty) {
-                            LazyColumn(
+                        AnimatedVisibility(selectedItem.value == 1) {
+                            AllGenresScreen(
+                                navigator = navigator,
+                                isDbEmpty = viewModel.state.isDbEmpty,
+                                isLoading = viewModel.state.isLoading,
                                 contentPadding = it2,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.fillMaxSize()
-                            ) {
-                                items(Genres.list.size) { it1 ->
-                                    val currentGenre = Genres.list[it1]
-                                    val currentItem =
-                                        viewModel.state.books.filter { it.genre == Genres.list[it1] }
-                                    AnimatedVisibility(currentItem.isNotEmpty()) {
-                                        LibraryCategory(
-                                            title = currentGenre,
-                                            books = currentItem,
-                                            modifier = Modifier.padding(vertical = 12.dp),
-                                            navigator = navigator,
-                                            onClick = {
-                                                navigator.navigate(
-                                                    CategoryViewDestination(
-                                                        category = currentGenre,
-                                                        darkTheme = viewModel.state.darkTheme
-                                                    )
-                                                )
-                                            }
-                                        )
-                                    }
-                                }
-                                //
-                                /*
-                                items(Genres.list.size) { it1 ->
-                                    LibraryCategory(
-                                        title = Genres.list[it1],
-                                        books = sampleBooks,
-                                        modifier = Modifier.padding(vertical = 12.dp),
-                                        navigator = navigator,
-                                        onClick = {
-                                            navigator.navigate(
-                                                CategoryViewDestination(
-                                                    category = Genres.list[it1],
-                                                    darkTheme = viewModel.state.darkTheme
-                                                )
-                                            )
-                                        }
-                                    )
-                                }
-
-                                 */
-                                //
-                            }
+                                books = viewModel.state.books
+                            )
                         }
-
+                        AnimatedVisibility(selectedItem.value == 0) {
+                            HomeScreen(
+                                navigator = navigator,
+                                isDbEmpty = viewModel.state.isDbEmpty,
+                                isLoading = viewModel.state.isLoading,
+                                contentPadding = it2,
+                                books = viewModel.state.books
+                            )
+                        }
+                        AnimatedVisibility(selectedItem.value == 2) {
+                            SettingsScreen(
+                                paddingValues = it2,
+                                isDbEmpty = viewModel.state.isDbEmpty,
+                                darkTheme = viewModel.state.darkTheme,
+                                dynamicTheme = viewModel.state.dynamicTheme,
+                                switchDynamic = {
+                                    viewModel.onEvent(EntryPointEvent.ToggleDynamicTheme)
+                                },
+                                switchDark = {
+                                    viewModel.onEvent(EntryPointEvent.ChangeTheme)
+                                },
+                            deleteDb = {
+                                viewModel.onEvent(EntryPointEvent.DeleteDb)
+                            })
+                        }
                     },
                     floatingActionButton = {
                         FloatingActionButton(
-                            onClick = { navigator.navigate(AddBookScreenDestination(darkTheme = viewModel.state.darkTheme)) }
+                            onClick = { navigator.navigate(AddBookScreenDestination()) }
                         ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.add_24px),
@@ -247,5 +244,249 @@ fun AnimatedVisibilityScope.EntryPoint(
             }
         }
 
+    }
+}
+
+@Composable
+fun HomeScreen(
+    navigator: DestinationsNavigator,
+    isDbEmpty: Boolean,
+    isLoading: Boolean,
+    contentPadding: PaddingValues,
+    books: List<Book>
+) {
+    AnimatedVisibility(isLoading) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+    AnimatedVisibility(!isDbEmpty) {
+        LazyColumn(
+            contentPadding = contentPadding,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(books.size) {
+                val currentBook = books[it]
+                ExpandedBookCard(navigator = navigator, book = currentBook)
+            }
+        }
+    }
+    AnimatedVisibility(isDbEmpty && !isLoading) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Your library is empty", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.padding(12.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.layers_clear_24px),
+                contentDescription = null,
+                modifier = Modifier.requiredSize(64.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun AllGenresScreen(
+    navigator: DestinationsNavigator,
+    isDbEmpty: Boolean,
+    isLoading: Boolean,
+    contentPadding: PaddingValues,
+    books: List<Book>
+) {
+    AnimatedVisibility(isLoading) {
+        Dialog(
+            onDismissRequest = {  },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+    AnimatedVisibility(!isDbEmpty) {
+        LazyColumn(
+            contentPadding = contentPadding,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            items(Genres.list.size) { it1 ->
+                val currentGenre = Genres.list[it1]
+                val currentItem =
+                    books.filter { it.genre == Genres.list[it1] }
+                AnimatedVisibility(currentItem.isNotEmpty()) {
+                    LibraryCategory(
+                        title = currentGenre,
+                        books = currentItem,
+                        modifier = Modifier.padding(vertical = 12.dp),
+                        navigator = navigator,
+                        onClick = {
+                            navigator.navigate(
+                                CategoryViewDestination(
+                                    category = currentGenre
+                                )
+                            )
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    AnimatedVisibility(isDbEmpty && !isLoading) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Your library is empty", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.padding(12.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.layers_clear_24px),
+                contentDescription = null,
+                modifier = Modifier.requiredSize(64.dp)
+            )
+        }
+    }
+
+}
+
+@Composable
+fun SettingsScreen(
+    paddingValues: PaddingValues,
+    isDbEmpty: Boolean,
+    darkTheme: Boolean,
+    dynamicTheme: Boolean,
+    switchDynamic: () -> Unit,
+    switchDark: () -> Unit,
+    deleteDb: () -> Unit
+) {
+    var dynamic by remember { mutableStateOf(dynamicTheme) }
+    var dark by remember { mutableStateOf(darkTheme) }
+    var empty by remember { mutableStateOf(isDbEmpty) }
+    val isAndroidS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
+    var showDelete by remember{ mutableStateOf(false)}
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = paddingValues
+    ) {
+        item {
+            Card(modifier = Modifier.fillMaxWidth(), shape = ShapeDefaults.ExtraLarge) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable {
+                            if (isAndroidS) {
+                                switchDynamic()
+                                dynamic = !dynamic
+                            }
+                        }
+                        .padding(12.dp)
+                ) {
+
+                    Text(
+                        text = "Enable Dynamic Colors (Android 12+)",
+                        color = if (isAndroidS) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.outline
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                    Switch(
+                        checked = dynamic,
+                        onCheckedChange = {
+                            switchDynamic()
+                            dynamic = !dynamic
+                        },
+                        enabled = isAndroidS
+                    )
+                }
+
+                Divider(Modifier.fillMaxWidth())
+
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .clickable {
+                            dark = !dark
+                            switchDark()
+                        }
+                        .padding(12.dp)
+                ) {
+
+                    Text(
+                        text = "Enable Dark Theme"
+                    )
+                    Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                    Switch(
+                        checked = dark,
+                        onCheckedChange = {
+                            switchDark()
+                            dark = !dark
+                        }
+                    )
+                }
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.padding(12.dp))
+        }
+
+        item {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        if (!empty) {
+                            showDelete = !showDelete
+                        }
+                    },
+                shape = ShapeDefaults.ExtraLarge
+            ) {
+                Text(
+                    text = "Delete all books",
+                    modifier = Modifier.padding(12.dp),
+                    color = if (empty) MaterialTheme.colorScheme.outline else MaterialTheme.colorScheme.error
+                )
+            }
+            AnimatedVisibility(showDelete) {
+                AlertDialog(
+                    onDismissRequest = {
+                        showDelete = false
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                showDelete = false
+                            }
+                        ) {
+                            Text(text = "Cancel")
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            showDelete = false
+                            deleteDb()
+                            empty = true
+                        }) {
+                            Text(text = "Yes")
+                        }
+                    },
+                    title = {
+                        Text(text = "Delete ALL BOOKS?")
+                    },
+                    text = {
+                        Text(text = "Are you sure you want to DELETE ALL BOOKS?")
+                    }
+                )
+            }
+
+        }
     }
 }

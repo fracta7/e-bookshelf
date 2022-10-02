@@ -1,8 +1,6 @@
 package com.fracta7.e_bookshelf.presentation.add_new_book
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,7 +16,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,11 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.request.ImageRequest
 import com.fracta7.e_bookshelf.R
 import com.fracta7.e_bookshelf.domain.model.Genres
 import com.fracta7.e_bookshelf.presentation.composable_elements.InfoSection
+import com.fracta7.e_bookshelf.presentation.destinations.EntryPointDestination
 import com.fracta7.e_bookshelf.presentation.ui.theme.EbookshelfTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -42,9 +38,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
     ExperimentalMaterial3Api::class
 )
 @Composable
-fun AnimatedVisibilityScope.AddBookScreen(
-    navigator: DestinationsNavigator,
-    darkTheme: Boolean = true
+fun AddBookScreen(
+    navigator: DestinationsNavigator
 ) {
     val viewModel = hiltViewModel<AddBookViewModel>()
     var isbn by remember { mutableStateOf("") }
@@ -55,14 +50,10 @@ fun AnimatedVisibilityScope.AddBookScreen(
     var number_of_pages by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val painter = rememberAsyncImagePainter(
-        ImageRequest.Builder(LocalContext.current).data(data = viewModel.state.book.cover)
-            .apply(block = fun ImageRequest.Builder.() {
-                placeholder(R.drawable.book_cover)
-                error(R.drawable.book_cover)
-            }).build()
-    )
-    EbookshelfTheme(darkTheme = darkTheme) {
+    EbookshelfTheme(
+        darkTheme = viewModel.state.darkTheme,
+        dynamicColor = viewModel.state.dynamicTheme
+    ) {
         Surface(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
             Scaffold(
                 topBar = {
@@ -92,7 +83,10 @@ fun AnimatedVisibilityScope.AddBookScreen(
                     )
                 },
                 floatingActionButton = {
-                    FloatingActionButton(onClick = { viewModel.onEvent(AddBookEvent.AddBook) }) {
+                    FloatingActionButton(onClick = {
+                        viewModel.onEvent(AddBookEvent.AddBook)
+                        navigator.navigate(EntryPointDestination)
+                    }) {
                         Text(text = "Add")
                     }
                 }
@@ -256,7 +250,9 @@ fun AnimatedVisibilityScope.AddBookScreen(
                                         AsyncImage(
                                             model = viewModel.state.book.cover,
                                             contentDescription = "book cover",
-                                            modifier = Modifier.requiredSize(100.dp, 150.dp)
+                                            modifier = Modifier.requiredSize(100.dp, 150.dp),
+                                            placeholder = painterResource(id = R.drawable.image_48px),
+                                            error = painterResource(id = R.drawable.image_48px)
                                         )
                                     }
                                     AnimatedVisibility(viewModel.state.title != "") {

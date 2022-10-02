@@ -19,6 +19,16 @@ class CategoryViewViewModel @Inject constructor(
 
     init {
         onEvent(CategoryViewEvent.LoadBooks)
+        viewModelScope.launch {
+            repository.getDarkSettings().collect{
+                state = state.copy(darkTheme = it)
+            }
+        }
+        viewModelScope.launch {
+            repository.getDynamicSettings().collect{
+                state = state.copy(dynamicTheme = it)
+            }
+        }
     }
 
     fun onEvent(event: CategoryViewEvent) {
