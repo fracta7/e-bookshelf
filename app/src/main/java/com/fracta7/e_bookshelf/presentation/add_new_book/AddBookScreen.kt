@@ -42,13 +42,6 @@ fun AddBookScreen(
     navigator: DestinationsNavigator
 ) {
     val viewModel = hiltViewModel<AddBookViewModel>()
-    var isbn by remember { mutableStateOf("") }
-    var title by remember { mutableStateOf("") }
-    var author by remember { mutableStateOf("") }
-    var publisher by remember { mutableStateOf("") }
-    var publish_date by remember { mutableStateOf("") }
-    var number_of_pages by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     EbookshelfTheme(
         darkTheme = viewModel.state.darkTheme,
@@ -121,10 +114,10 @@ fun AddBookScreen(
                                 }
                             }
                             OutlinedTextField(
-                                value = isbn,
+                                value = viewModel.state.isbn,
                                 onValueChange = {
-                                    isbn = it
-                                    viewModel.onEvent(AddBookEvent.CheckBook(isbn))
+                                    viewModel.state = viewModel.state.copy(isbn = it)
+                                    viewModel.onEvent(AddBookEvent.CheckBook(viewModel.state.isbn))
                                 },
                                 shape = ShapeDefaults.Large,
                                 label = { Text(text = "ISBN") },
@@ -150,7 +143,7 @@ fun AddBookScreen(
                             //dropdown menu
                             var expanded by remember { mutableStateOf(false) }
                             var selectedItem by remember { mutableStateOf("") }
-                            var textFiledSize by remember { mutableStateOf(Size.Zero) }
+                            var textFilledSize0 by remember { mutableStateOf(Size.Zero) }
                             val icon = if (expanded) {
                                 Icons.Filled.KeyboardArrowUp
                             } else {
@@ -162,6 +155,7 @@ fun AddBookScreen(
                                 MaterialTheme.colorScheme.outline
                             }
 
+                            //genre selector
                             OutlinedTextField(
                                 value = selectedItem,
                                 onValueChange = { selectedItem = it },
@@ -170,7 +164,7 @@ fun AddBookScreen(
                                         expanded = !expanded
                                     }
                                     .onGloballyPositioned { coordinates ->
-                                        textFiledSize = coordinates.size.toSize()
+                                        textFilledSize0 = coordinates.size.toSize()
                                     }
                                     .padding(start = 12.dp, bottom = 12.dp, end = 12.dp)
                                     .fillMaxWidth(),
@@ -221,10 +215,100 @@ fun AddBookScreen(
                                     }
                                 }
                             }
+
+                            //reading list
+                            var expandedReadingList by remember { mutableStateOf(false) }
+                            var textFilledSize1 by remember { mutableStateOf(Size.Zero) }
+                            var selectedReadingList by remember { mutableStateOf("") }
+                            val iconReadingList = if (expandedReadingList) {
+                                Icons.Filled.KeyboardArrowUp
+                            } else {
+                                Icons.Filled.KeyboardArrowDown
+                            }
                             OutlinedTextField(
-                                value = description,
+                                value = selectedItem,
+                                onValueChange = { selectedItem = it },
+                                modifier = Modifier
+                                    .clickable {
+                                        expandedReadingList = !expandedReadingList
+                                    }
+                                    .onGloballyPositioned { coordinates ->
+                                        textFilledSize1 = coordinates.size.toSize()
+                                    }
+                                    .padding(start = 12.dp, bottom = 12.dp, end = 12.dp)
+                                    .fillMaxWidth(),
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.fact_check_24px),
+                                        contentDescription = "reading list"
+                                    )
+                                },
+                                trailingIcon = {
+                                    Icon(iconReadingList, contentDescription = null,
+                                        modifier = Modifier.clickable {
+                                            expandedReadingList = !expandedReadingList
+                                        })
+                                },
+                                readOnly = true,
+                                shape = ShapeDefaults.Large
+                            )
+                            DropdownMenu(
+                                expanded = expandedReadingList,
+                                onDismissRequest = {
+                                    expandedReadingList = false
+                                },
+                                offset = DpOffset(64.dp, 12.dp)
+                            ) {
+                                LazyColumn(
+                                    modifier = Modifier.size(
+                                        width = 220.dp,
+                                        height = 500.dp
+                                    )
+                                ) {
+                                    item {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(text = "Default")
+                                            },
+                                            onClick = {
+                                                selectedReadingList = "Default"
+                                                expandedReadingList = false
+                                                viewModel.onEvent(
+                                                    AddBookEvent.SelectReadingList(
+                                                        selectedReadingList
+                                                    )
+                                                )
+                                            })
+                                    }
+                                    if (viewModel.state.readingList.isNotEmpty()) {
+                                        items(viewModel.state.readingList.size) {
+                                            DropdownMenuItem(
+                                                text = {
+                                                    viewModel.state.readingList[it].name?.let { it2 ->
+                                                        Text(
+                                                            text = it2
+                                                        )
+                                                    }
+                                                },
+                                                onClick = {
+                                                    selectedReadingList =
+                                                        viewModel.state.readingList[it].name.toString()
+                                                    expandedReadingList = false
+                                                    viewModel.onEvent(
+                                                        AddBookEvent.SelectReadingList(
+                                                            selectedReadingList
+                                                        )
+                                                    )
+                                                })
+                                        }
+                                    }
+                                }
+                            }
+
+                            //description
+                            OutlinedTextField(
+                                value = viewModel.state.description,
                                 onValueChange = {
-                                    description = it
                                     viewModel.state = viewModel.state.copy(description = it)
                                 },
                                 label = { Text("Description (optional)") },
@@ -336,8 +420,10 @@ fun AddBookScreen(
                                 Column(Modifier.padding(12.dp)) {
 
                                     OutlinedTextField(
-                                        value = title,
-                                        onValueChange = { title = it },
+                                        value = viewModel.state.title,
+                                        onValueChange = {
+                                            viewModel.state = viewModel.state.copy(title = it)
+                                        },
                                         label = { Text(text = "Title") },
                                         singleLine = true,
                                         shape = ShapeDefaults.Large,
@@ -353,8 +439,10 @@ fun AddBookScreen(
                                         }
                                     )
                                     OutlinedTextField(
-                                        value = author,
-                                        onValueChange = { author = it },
+                                        value = viewModel.state.author,
+                                        onValueChange = {
+                                            viewModel.state = viewModel.state.copy(author = it)
+                                        },
                                         label = { Text(text = "Author") },
                                         singleLine = true,
                                         shape = ShapeDefaults.Large,
@@ -370,8 +458,10 @@ fun AddBookScreen(
                                         }
                                     )
                                     OutlinedTextField(
-                                        value = publisher,
-                                        onValueChange = { publisher = it },
+                                        value = viewModel.state.publisher,
+                                        onValueChange = {
+                                            viewModel.state = viewModel.state.copy(publisher = it)
+                                        },
                                         label = { Text(text = "Publisher") },
                                         singleLine = true,
                                         shape = ShapeDefaults.Large,
@@ -387,8 +477,11 @@ fun AddBookScreen(
                                         }
                                     )
                                     OutlinedTextField(
-                                        value = publish_date,
-                                        onValueChange = { publish_date = it },
+                                        value = viewModel.state.publish_date,
+                                        onValueChange = {
+                                            viewModel.state =
+                                                viewModel.state.copy(publish_date = it)
+                                        },
                                         label = { Text(text = "Publish date") },
                                         singleLine = true,
                                         shape = ShapeDefaults.Large,
@@ -405,8 +498,10 @@ fun AddBookScreen(
                                         }
                                     )
                                     OutlinedTextField(
-                                        value = number_of_pages,
-                                        onValueChange = { number_of_pages = it },
+                                        value = viewModel.state.page_count,
+                                        onValueChange = {
+                                            viewModel.state = viewModel.state.copy(page_count = it)
+                                        },
                                         shape = ShapeDefaults.Large,
                                         label = { Text(text = "Page count") },
                                         keyboardOptions = KeyboardOptions(

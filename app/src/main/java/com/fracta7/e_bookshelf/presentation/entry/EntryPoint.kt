@@ -22,10 +22,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.fracta7.e_bookshelf.R
 import com.fracta7.e_bookshelf.domain.model.Book
 import com.fracta7.e_bookshelf.domain.model.Genres
+import com.fracta7.e_bookshelf.domain.model.ReadingList
 import com.fracta7.e_bookshelf.presentation.composable_elements.ExpandedBookCard
 import com.fracta7.e_bookshelf.presentation.composable_elements.LibraryCategory
 import com.fracta7.e_bookshelf.presentation.destinations.AddBookScreenDestination
 import com.fracta7.e_bookshelf.presentation.destinations.CategoryViewDestination
+import com.fracta7.e_bookshelf.presentation.destinations.ReadingListViewDestination
+import com.fracta7.e_bookshelf.presentation.reading_list.ReadingListAll
 import com.fracta7.e_bookshelf.presentation.ui.theme.EbookshelfTheme
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -63,9 +66,14 @@ fun EntryPoint(
             enabled = viewModel.state.drawerState.isOpen
         )
     }
-    val items = listOf(0, 1, 2)
-    val navItems = listOf("Home", "Categories", "Settings")
-    val navIcons = listOf(R.drawable.home_24px, R.drawable.category_24px, R.drawable.tune_24px)
+    val items = listOf(0, 1, 2, 3)
+    val navItems = listOf("Home", "Categories", "Reading Lists", "Settings")
+    val navIcons = listOf(
+        R.drawable.home_24px,
+        R.drawable.category_24px,
+        R.drawable.fact_check_24px,
+        R.drawable.tune_24px
+    )
     val selectedItem = remember { mutableStateOf(items[0]) }
     var title by remember { mutableStateOf("Home") }
     EbookshelfTheme(
@@ -191,7 +199,14 @@ fun EntryPoint(
                                     )
                                 }
                             },
-                            scrollBehavior = scrollBehavior
+                            scrollBehavior = scrollBehavior,
+                            actions = {
+                                TextButton(onClick = {
+
+                                }) {
+                                    Text(text = "Add New Reading List")
+                                }
+                            }
                         )
                     },
                     content = { it2 ->
@@ -213,7 +228,10 @@ fun EntryPoint(
                                 books = viewModel.state.books
                             )
                         }
-                        AnimatedVisibility(selectedItem.value == 2) {
+                        AnimatedVisibility(visible = selectedItem.value == 2) {
+
+                        }
+                        AnimatedVisibility(selectedItem.value == 3) {
                             SettingsScreen(
                                 paddingValues = it2,
                                 isDbEmpty = viewModel.state.isDbEmpty,
@@ -225,9 +243,9 @@ fun EntryPoint(
                                 switchDark = {
                                     viewModel.onEvent(EntryPointEvent.ChangeTheme)
                                 },
-                            deleteDb = {
-                                viewModel.onEvent(EntryPointEvent.DeleteDb)
-                            })
+                                deleteDb = {
+                                    viewModel.onEvent(EntryPointEvent.DeleteDb)
+                                })
                         }
                     },
                     floatingActionButton = {
@@ -303,7 +321,7 @@ fun AllGenresScreen(
 ) {
     AnimatedVisibility(isLoading) {
         Dialog(
-            onDismissRequest = {  },
+            onDismissRequest = { },
             properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
         ) {
             CircularProgressIndicator()
@@ -370,7 +388,7 @@ fun SettingsScreen(
     var dark by remember { mutableStateOf(darkTheme) }
     var empty by remember { mutableStateOf(isDbEmpty) }
     val isAndroidS = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    var showDelete by remember{ mutableStateOf(false)}
+    var showDelete by remember { mutableStateOf(false) }
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -487,6 +505,72 @@ fun SettingsScreen(
                 )
             }
 
+        }
+    }
+}
+
+@Composable
+fun ReadingListScreen(
+    navigator: DestinationsNavigator,
+    isDbEmpty: Boolean,
+    isLoading: Boolean,
+    contentPadding: PaddingValues,
+    readingList: List<ReadingList>,
+    books: List<Book>
+) {
+    AnimatedVisibility(isLoading) {
+        Dialog(
+            onDismissRequest = { },
+            properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+    AnimatedVisibility(!isDbEmpty) {
+        LazyColumn(
+            contentPadding = contentPadding,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            item {
+                AnimatedVisibility(visible = books.isNotEmpty()) {
+                    val filteredBooks = books.filter { it.readingList == "Default" }
+                    ReadingListAll(title = "Default", bookCount = filteredBooks.size) {
+                        navigator.navigate(ReadingListViewDestination(readingList = "Default"))
+                    }
+                }
+            }
+            items(readingList.size) { it1 ->
+                val currentReadingList = readingList[it1].name
+                val currentItem =
+                    books.filter { it.readingList == readingList[it1].name }
+                AnimatedVisibility(currentItem.isNotEmpty()) {
+                    if (currentReadingList != null) {
+                        ReadingListAll(
+                            title = readingList[it1].name.toString(),
+                            bookCount = currentItem.size
+                        ) {
+                            navigator.navigate(ReadingListViewDestination(readingList = readingList[it1].name.toString()))
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    AnimatedVisibility(isDbEmpty && !isLoading) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(text = "Your library is empty", style = MaterialTheme.typography.titleLarge)
+            Spacer(modifier = Modifier.padding(12.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.layers_clear_24px),
+                contentDescription = null,
+                modifier = Modifier.requiredSize(64.dp)
+            )
         }
     }
 }

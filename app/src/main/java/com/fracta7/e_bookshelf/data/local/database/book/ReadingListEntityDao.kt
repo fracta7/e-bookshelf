@@ -11,7 +11,7 @@ interface ReadingListEntityDao {
     suspend fun getAll(): List<ReadingListEntity>
 
     @Insert
-    suspend fun insertBook(vararg readingList: ReadingListEntity)
+    suspend fun insertNewReadingList(vararg readingList: ReadingListEntity)
 
     @Delete
     suspend fun delete(readingList: ReadingListEntity)

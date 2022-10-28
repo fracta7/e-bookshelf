@@ -1,6 +1,6 @@
-package com.fracta7.e_bookshelf.presentation.category_view
+package com.fracta7.e_bookshelf.presentation.reading_list
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -18,8 +18,8 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun CategoryView(navigator: DestinationsNavigator, category: String) {
-    val viewModel = hiltViewModel<CategoryViewViewModel>()
+fun ReadingListView(navigator: DestinationsNavigator, readingList: String) {
+    val viewModel = hiltViewModel<ReadingListAllViewModel>()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     EbookshelfTheme(
         darkTheme = viewModel.state.darkTheme,
@@ -30,7 +30,7 @@ fun CategoryView(navigator: DestinationsNavigator, category: String) {
                 topBar = {
                     LargeTopAppBar(
                         title = {
-                            Text(text = category, overflow = TextOverflow.Ellipsis, maxLines = 2)
+                            Text(text = readingList, overflow = TextOverflow.Ellipsis, maxLines = 2)
                         },
                         navigationIcon = {
                             IconButton(onClick = {
@@ -47,7 +47,9 @@ fun CategoryView(navigator: DestinationsNavigator, category: String) {
                 },
                 content = { it ->
                     LazyColumn(modifier = Modifier.padding(it)) {
-                        val filteredBooks = viewModel.state.books.filter { it.genre == category }
+                        val filteredBooks =
+                            viewModel.state.books.filter { it.readingList == readingList }
+
                         items(filteredBooks.size) {
                             val currentBook = filteredBooks[it]
                             ExpandedBookCard(navigator = navigator, book = currentBook)

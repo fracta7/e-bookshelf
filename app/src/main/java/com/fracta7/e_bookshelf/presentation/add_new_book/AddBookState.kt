@@ -2,6 +2,7 @@ package com.fracta7.e_bookshelf.presentation.add_new_book
 
 import com.fracta7.e_bookshelf.domain.model.Book
 import com.fracta7.e_bookshelf.domain.model.RawBook
+import com.fracta7.e_bookshelf.domain.model.ReadingList
 
 data class AddBookState(
     val books: List<Book> = emptyList(),
@@ -34,5 +35,6 @@ data class AddBookState(
     val isBookPresent: Boolean = false,
     val selectedReadingList: String = "Default",
     val darkTheme: Boolean = true,
-    val dynamicTheme: Boolean = false
+    val dynamicTheme: Boolean = false,
+    val readingList: List<ReadingList> = emptyList()
 )

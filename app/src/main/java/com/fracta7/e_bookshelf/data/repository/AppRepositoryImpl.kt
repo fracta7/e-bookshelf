@@ -10,14 +10,12 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
 import com.fracta7.e_bookshelf.data.local.database.AppDatabase
-import com.fracta7.e_bookshelf.data.mapper.toBook
-import com.fracta7.e_bookshelf.data.mapper.toBookEntity
-import com.fracta7.e_bookshelf.data.mapper.toRawBook
-import com.fracta7.e_bookshelf.data.mapper.toRawBookEntity
+import com.fracta7.e_bookshelf.data.mapper.*
 import com.fracta7.e_bookshelf.data.remote.BookAPI
 import com.fracta7.e_bookshelf.data.remote.dto.book.isbn.ISBNModel
 import com.fracta7.e_bookshelf.domain.model.Book
 import com.fracta7.e_bookshelf.domain.model.RawBook
+import com.fracta7.e_bookshelf.domain.model.ReadingList
 import com.fracta7.e_bookshelf.domain.repository.AppRepository
 import com.fracta7.e_bookshelf.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -166,6 +164,20 @@ class AppRepositoryImpl @Inject constructor(
         application.dataStore.edit {
             it[dynamicTheme] = dynamic
         }
+    }
+
+    override suspend fun getReadingList(): Flow<Resource<List<ReadingList>>> {
+        return flow {
+            emit(Resource.Loading(isLoading = true))
+            val readingList = db.readingList().getAll().map { it.toReadingList() }
+            if (readingList.isEmpty()) emit(Resource.Error(message = "Database is Empty")) else emit(
+                Resource.Success(data = readingList)
+            )
+        }
+    }
+
+    override suspend fun addReadingList(readingList: ReadingList) {
+        db.readingList().insertNewReadingList(readingList.toReadingListEntity())
     }
 
     override suspend fun getDarkSettings(): Flow<Boolean> {

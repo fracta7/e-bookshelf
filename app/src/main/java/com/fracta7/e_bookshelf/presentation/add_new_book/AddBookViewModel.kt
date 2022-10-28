@@ -42,6 +42,9 @@ class AddBookViewModel @Inject constructor(private val repository: AppRepository
                 state = state.copy(dynamicTheme = it)
             }
         }
+        viewModelScope.launch {
+
+        }
     }
 
     fun onEvent(event: AddBookEvent = AddBookEvent.AddBook) {
@@ -63,12 +66,9 @@ class AddBookViewModel @Inject constructor(private val repository: AppRepository
                         description = state.description,
                         favorite = false
                     )
-                    Log.d(TAG, "onEvent: $book")
+
                     repository.insertBook(book)
                 }
-
-                //placeholder
-                state = state.copy(url = "https://covers.openlibrary.org/b/id/7357496-L.jpg")
             }
             is AddBookEvent.SelectCategory -> {
                 state = state.copy(selectedCategory = event.selectedItem)
@@ -114,6 +114,9 @@ class AddBookViewModel @Inject constructor(private val repository: AppRepository
                         }
                     }
                 }
+            }
+            is AddBookEvent.SelectReadingList -> {
+                state = state.copy(selectedReadingList = event.selectedReadingList)
             }
 
         }

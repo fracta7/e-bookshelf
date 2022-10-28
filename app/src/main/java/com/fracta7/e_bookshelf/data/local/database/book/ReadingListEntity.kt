@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "reading_list")
 data class ReadingListEntity(
     @PrimaryKey val uid: Int? = null,
-    val readingListName: String?,
+    val name: String?,
     val isDone: Boolean?
 )

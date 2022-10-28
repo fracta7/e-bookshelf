@@ -14,7 +14,6 @@
           <stringArguments>
             <stringArg name="classpath">
               <args>
-                <arg>$MODULE_DIR$/../../../app/build/intermediates/compile_and_runtime_not_namespaced_r_class_jar/debug/R.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/a5771226eca3aae34c2d505ad84292f7/transformed/hilt-navigation-compose-1.0.0-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/fbcba34baca121775ec786eea49cb6f6/transformed/animations-core-1.7.21-beta-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/1779775158750e9e0d5679d0a6098dcd/transformed/core-1.7.21-beta-api.jar</arg>
@@ -126,8 +125,8 @@
                 <arg>$USER_HOME$/.gradle/caches/transforms-3/509315f5447f98594c45616355cb11fc/transformed/dagger-lint-aar-2.43.2-api.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.findbugs/jsr305/3.0.2/25ea2e8b0c338a877313bd4672d3fe056ea78f0d/jsr305-3.0.2.jar</arg>
                 <arg>$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.5/f645ed69d595b24d4cf8b3fbb64cc505bede8829/gson-2.8.5.jar</arg>
-                <arg>$MODULE_DIR$/../../../../../android/platforms/android-33/android.jar</arg>
-                <arg>$MODULE_DIR$/../../../../../android/build-tools/30.0.3/core-lambda-stubs.jar</arg>
+                <arg>$USER_HOME$/AppData/Local/Android/Sdk/platforms/android-33/android.jar</arg>
+                <arg>$USER_HOME$/AppData/Local/Android/Sdk/build-tools/30.0.3/core-lambda-stubs.jar</arg>
               </args>
             </stringArg>
             <stringArg name="destination" arg="$MODULE_DIR$/../../../app/build/tmp/kotlin-classes/debugUnitTest" />

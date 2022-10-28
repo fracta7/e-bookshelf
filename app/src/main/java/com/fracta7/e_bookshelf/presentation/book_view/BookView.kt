@@ -36,7 +36,10 @@ fun BookView(navigator: DestinationsNavigator, isbn: String) {
         viewModel.onEvent(BookViewEvent.LoadBook(isbn))
     }
 
-    EbookshelfTheme(darkTheme = viewModel.state.darkTheme, dynamicColor = viewModel.state.dynamicTheme) {
+    EbookshelfTheme(
+        darkTheme = viewModel.state.darkTheme,
+        dynamicColor = viewModel.state.dynamicTheme
+    ) {
         Surface(modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)) {
             Scaffold(
                 topBar = {
@@ -157,6 +160,13 @@ fun BookView(navigator: DestinationsNavigator, isbn: String) {
                                             painter = painterResource(id = R.drawable.fact_check_24px),
                                             label = "Reading List",
                                             text = viewModel.state.book?.readingList.toString()
+                                        )
+                                    }
+                                    AnimatedVisibility(visible = viewModel.state.book?.isbn != "") {
+                                        InfoSection(
+                                            painter = painterResource(id = R.drawable.barcode_24px),
+                                            label = "ISBN",
+                                            text = viewModel.state.book?.isbn.toString()
                                         )
                                     }
                                 }
