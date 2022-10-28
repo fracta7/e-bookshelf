@@ -22,3 +22,6 @@
 -dontnote okhttp3.**, okio.**, retrofit2.**
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
+-dontnote io.coil.**
+-dontwarn io.coil.**
+-keep class io.coil.** {*;}

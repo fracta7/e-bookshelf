@@ -226,8 +226,8 @@ fun AddBookScreen(
                                 Icons.Filled.KeyboardArrowDown
                             }
                             OutlinedTextField(
-                                value = selectedItem,
-                                onValueChange = { selectedItem = it },
+                                value = selectedReadingList,
+                                onValueChange = { selectedReadingList = it },
                                 modifier = Modifier
                                     .clickable {
                                         expandedReadingList = !expandedReadingList

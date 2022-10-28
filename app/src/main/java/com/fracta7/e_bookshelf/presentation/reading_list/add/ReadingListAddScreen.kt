@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.fracta7.e_bookshelf.R
 import com.fracta7.e_bookshelf.presentation.destinations.EntryPointDestination
@@ -73,11 +74,17 @@ fun ReadingListAddScreen(navigator: DestinationsNavigator) {
                                 onValueChange = {
                                     viewModel.state = viewModel.state.copy(readingListName = it)
                                 },
-                                modifier = Modifier.fillMaxWidth()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp, 12.dp, 12.dp, 0.dp)
                             )
                             val status =
                                 if (viewModel.state.alreadyExists) "Reading list already exist" else ""
-                            Text(text = status, color = MaterialTheme.colorScheme.error)
+                            Text(
+                                text = status,
+                                color = MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(12.dp, 0.dp, 12.dp, 12.dp)
+                            )
                         }
                     }
                 }

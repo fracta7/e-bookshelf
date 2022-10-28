@@ -27,6 +27,7 @@ import com.fracta7.e_bookshelf.presentation.composable_elements.ExpandedBookCard
 import com.fracta7.e_bookshelf.presentation.composable_elements.LibraryCategory
 import com.fracta7.e_bookshelf.presentation.destinations.AddBookScreenDestination
 import com.fracta7.e_bookshelf.presentation.destinations.CategoryViewDestination
+import com.fracta7.e_bookshelf.presentation.destinations.ReadingListAddScreenDestination
 import com.fracta7.e_bookshelf.presentation.destinations.ReadingListViewDestination
 import com.fracta7.e_bookshelf.presentation.reading_list.ReadingListAll
 import com.fracta7.e_bookshelf.presentation.ui.theme.EbookshelfTheme
@@ -202,7 +203,7 @@ fun EntryPoint(
                             scrollBehavior = scrollBehavior,
                             actions = {
                                 TextButton(onClick = {
-
+                                    navigator.navigate(ReadingListAddScreenDestination())
                                 }) {
                                     Text(text = "Add New Reading List")
                                 }
@@ -229,7 +230,14 @@ fun EntryPoint(
                             )
                         }
                         AnimatedVisibility(visible = selectedItem.value == 2) {
-
+                            ReadingListScreen(
+                                navigator = navigator,
+                                isDbEmpty = viewModel.state.isDbEmpty,
+                                isLoading = viewModel.state.isLoading,
+                                contentPadding = it2,
+                                readingList = viewModel.state.readingList,
+                                books = viewModel.state.books
+                            )
                         }
                         AnimatedVisibility(selectedItem.value == 3) {
                             SettingsScreen(
@@ -533,8 +541,8 @@ fun ReadingListScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             item {
-                AnimatedVisibility(visible = books.isNotEmpty()) {
-                    val filteredBooks = books.filter { it.readingList == "Default" }
+                val filteredBooks = books.filter { it.readingList == "Default" }
+                AnimatedVisibility(visible = filteredBooks.isNotEmpty()) {
                     ReadingListAll(title = "Default", bookCount = filteredBooks.size) {
                         navigator.navigate(ReadingListViewDestination(readingList = "Default"))
                     }
